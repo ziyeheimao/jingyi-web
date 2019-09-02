@@ -6,7 +6,7 @@
         <el-form :model="form"  label-position="left" :rules="rules" ref="form">
 
           <el-form-item label="" :label-width="formLabelWidth" prop='field'>
-            <el-input clearable v-model="form.field" placeholder="手机 / 邮箱 / 昵称"></el-input>
+            <el-input clearable v-model="form.field" placeholder="手机 / 邮箱 / 昵称" @keyup.native="keyup($event)"></el-input>
           </el-form-item>
 
           <el-form-item label="" :label-width="formLabelWidth" prop='password'>
@@ -79,6 +79,7 @@ export default {
       this.$refs[form].validate(valid => {
         if (valid) {
           api.login(this.form).then(({data}) => {
+            console.log('登录', data)
             if (data.code === 0) {
               let token = data.token
               window.sessionStorage.setItem('token', token)
@@ -92,7 +93,7 @@ export default {
 
     // 绑定回车
     keyup (e) {
-      if (this.form.checked === false) {
+      if (this.checked === false) {
         return
       }
 

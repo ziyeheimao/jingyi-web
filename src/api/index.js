@@ -23,5 +23,10 @@ export default {
   // 获取验证码
   verificationCode (field) {
     return axios.get(`/user/verificationCode?field=${field}`)
+  },
+
+  // 修改密码
+  forgetPassword (data) {
+    return axios.put(`/user/forgetPassword`, data)
   }
 }

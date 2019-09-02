@@ -18,11 +18,7 @@
           </el-form-item>
 
           <el-form-item label="" :label-width="formLabelWidth" prop='password'>
-            <el-input clearable v-model="form.password" show-password placeholder="密码"></el-input>
-          </el-form-item>
-
-          <el-form-item label="" :label-width="formLabelWidth" prop='password'>
-            <el-input clearable v-model="form.password2" show-password placeholder="确认密码" @blur="checkPassword_" @keyup.native="keyup($event)"></el-input>
+            <el-input clearable v-model="form.password" show-password placeholder="密码" @keyup.native="keyup($event)"></el-input>
           </el-form-item>
 
           <div class="footer">
@@ -63,8 +59,7 @@ export default {
         phone: '',
         email: '',
         userName: '',
-        password: '',
-        password2: ''
+        password: ''
       },
 
       checked: true,
@@ -107,7 +102,6 @@ export default {
     // 注册
     submit (form) {
       this.$refs[form].validate(valid => {
-        this.check()
         if (valid * this.checkEmail * this.checkPhone * this.checkUserName * this.checkPassword) {
           api.register(this.form).then(({data}) => {
             if (data.code === 0) {
@@ -119,14 +113,6 @@ export default {
           })
         }
       })
-    },
-
-    // 提交前检测
-    check: async function () {
-      await this.checkUserNamePhoneEmail(this.form.email, 1)
-      await this.checkUserNamePhoneEmail(this.form.phone, 2)
-      await this.checkUserNamePhoneEmail(this.form.userName, 3)
-      await this.checkPassword_()
     },
 
     // 检测 手机 邮箱 昵称 是否被占用
@@ -149,6 +135,7 @@ export default {
 
         let data = { field }
         api.checkUserNamePhoneEmail(data).then(({data}) => {
+          console.log('验证结果', data)
           if (data.code === 0) {
             switch (type) {
               case 1:
@@ -179,16 +166,6 @@ export default {
           }
         })
       })
-    },
-
-    // 两次密码相同检测
-    checkPassword_ () {
-      if (this.form.password === this.form.password2) {
-        this.checkPassword = true
-      } else {
-        main.openWarningInfo('两次输入的密码不一致')
-        this.checkPassword = false
-      }
     },
 
     // 注册成功后自动登录

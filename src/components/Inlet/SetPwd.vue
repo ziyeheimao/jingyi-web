@@ -5,35 +5,18 @@
       <div>
         <el-form :model="form"  label-position="left" :rules="rules" ref="form">
 
-          <!-- <el-form-item label="" :label-width="formLabelWidth">
-            <el-input clearable v-model="form.phone" placeholder="手机"></el-input>
-          </el-form-item>
-
-          <el-form-item label="" :label-width="formLabelWidth">
-            <el-input clearable v-model="form.email" placeholder="邮箱"></el-input>
-          </el-form-item> -->
-
-          <el-form-item label="" :label-width="formLabelWidth">
-            <el-input placeholder="邮箱 / 手机" v-model="form.field" class="input-with-select">
-              <!-- <el-select v-model="form.select" slot="prepend" placeholder="请选择">
-                <el-option label="餐厅名" value="1"></el-option>
-                <el-option label="订单号" value="2"></el-option>
-                <el-option label="用户电话" value="3"></el-option>
-              </el-select> -->
+          <el-form-item label="" :label-width="formLabelWidth" prop='field'>
+            <el-input placeholder="邮箱 / 手机" v-model="form.field" class="input-with-select" @keyup.native="keyup($event)">
               <el-button slot="append" :disabled="verificationCode" @click="getVerificationCode">{{btnInfo}}</el-button>
             </el-input>
           </el-form-item>
 
-          <el-form-item label="" :label-width="formLabelWidth">
+          <el-form-item label="" :label-width="formLabelWidth" prop='verificationCode'>
             <el-input clearable v-model="form.verificationCode" placeholder="验证码"></el-input>
           </el-form-item>
 
-          <el-form-item label="" :label-width="formLabelWidth">
-            <el-input clearable v-model="form.password" show-password placeholder="新密码"></el-input>
-          </el-form-item>
-
-          <el-form-item label="" :label-width="formLabelWidth">
-            <el-input clearable v-model="form.password2" show-password placeholder="确认密码"></el-input>
+          <el-form-item label="" :label-width="formLabelWidth" prop='password'>
+            <el-input clearable v-model="form.password" show-password placeholder="新密码" @keyup.native="keyup2($event)"></el-input>
           </el-form-item>
 
           <div class="footer">
@@ -72,21 +55,26 @@ export default {
       formLabelWidth: '0',
       disabled: false,
       form: {
-        // phone: '',
-        // email: '',
-        // select: '',
-
         field: '',
-
-        password: '',
-        password2: ''
-        // selectField: ''
+        password: ''
       },
 
       checked: true,
       btnInfo: '获取验证码',
       verificationCode: false,
-      rules: {},
+      rules: {
+        field: [
+          { required: true, message: '手机或邮箱不可为空', trigger: 'blur' }
+        ],
+
+        verificationCode: [
+          { required: true, message: '验证码不可为空', trigger: 'blur' }
+        ],
+
+        password: [
+          { required: true, message: '密码不可为空', trigger: 'blur' }
+        ]
+      },
       timer: null
     }
   },
@@ -96,29 +84,48 @@ export default {
     mode (code) {
       this.$store.commit('SMode', code)
     },
+    keyup (e) {
+      if (e.keyCode === 13) {
+        this.getVerificationCode()
+      }
+    },
 
+    keyup2 (e) {
+      if (this.checked === false) {
+        return
+      }
+
+      if (e.keyCode === 13) {
+        this.submit('form')
+      }
+    },
     // 判断邮箱 或 电话是否填写格式是否正确
     valid () {
-      if (this.field === '') {
+      if (this.form.field === '') {
         main.openWarningInfo('手机或邮箱不可为空')
         return false
       }
 
-      if (main.reg.phone.test(this.field) || main.reg.email.test(this.field)) {
+      if (main.reg.phone.test(this.form.field)) {
         return true
-      } else {
-        main.openWarningInfo('手机或邮箱格式不正确')
-        return false
       }
+
+      if (main.reg.email.test(this.form.field)) {
+        return true
+      }
+
+      main.openWarningInfo('手机或邮箱格式不正确')
+      return false
     },
 
     // 获取验证码
     getVerificationCode () {
-      if (!this.valid) {
+      if (!this.valid()) {
         return
       }
+
       this.verificationCode = true
-      let i = 10
+      let i = 30
       this.timer = setInterval(() => {
         this.btnInfo = `${i}秒后重新获取`
 
@@ -132,6 +139,11 @@ export default {
 
       api.verificationCode(this.form.field).then(({data}) => {
         console.log('验证码', data)
+        if (data.code === 0) {
+
+        } else {
+          main.openWarningInfo(data.msg)
+        }
       })
     },
 
@@ -139,7 +151,15 @@ export default {
     submit (form) {
       this.$refs[form].validate(valid => {
         if (valid) {
-
+          api.forgetPassword(this.form).then(({data}) => {
+            console.log(data)
+            if (data.code === 0) {
+              this.$store.dispatch('AMode', 0)
+              main.openSuccessInfo(data.msg)
+            } else {
+              main.openInfo(data.msg)
+            }
+          })
         }
       })
     }
@@ -182,12 +202,4 @@ div.box{
   position: relative;
   top: -3px;
 }
-
-/*
-.el-select .el-input {
-  width: 130px;
-}
-.input-with-select .el-input-group__prepend {
-  background-color: #fff;
-}  */
 </style>
