@@ -1,5 +1,5 @@
 <template>
-  <span></span>
+  <span>这是关于本站 /introduction </span>
 </template>
 
 <script>

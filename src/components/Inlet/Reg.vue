@@ -47,9 +47,6 @@ export default {
   components: {},
   // props: ['row'],
   computed: {
-    InnerSize () {
-      return this.$store.getters.InnerSize
-    }
   },
   data () {
     return {
@@ -180,6 +177,8 @@ export default {
           let token = data.token
           window.sessionStorage.setItem('token', token)
           this.$store.dispatch('AToken', token)
+
+          this.$store.dispatch('AUser', data.result[0])
 
           let i = 3
           this.timer = setInterval(() => {

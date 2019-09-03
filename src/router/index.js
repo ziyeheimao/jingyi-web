@@ -18,14 +18,53 @@ const Index = resolve => {
   })
 }
 
+// 用户中心
+const User = resolve => {
+  require.ensure(['@components/User/User.vue'], () => {
+    resolve(require('@components/User/User.vue'))
+  })
+}
+
+// 猜你喜欢
+const Recommend = resolve => {
+  require.ensure(['@components/Recommend/Recommend.vue'], () => {
+    resolve(require('@components/Recommend/Recommend.vue'))
+  })
+}
+
+// 友情链接
+const Links = resolve => {
+  require.ensure(['@components/Links/Links.vue'], () => {
+    resolve(require('@components/Links/Links.vue'))
+  })
+}
+
+// 关于本站
+const Introduction = resolve => {
+  require.ensure(['@components/Introduction/Introduction.vue'], () => {
+    resolve(require('@components/Introduction/Introduction.vue'))
+  })
+}
+
+// 在线留言
+const Message = resolve => {
+  require.ensure(['@components/Message/Message.vue'], () => {
+    resolve(require('@components/Message/Message.vue'))
+  })
+}
+
 Vue.use(Router)
 
 const router = new Router({
   // mode: 'history',
   routes: [
     {
+      path: '/inlet',
+      name: 'Inlet',
+      component: Inlet
+    },
+    {
       path: '/',
-      name: 'Index',
       component: Index,
       meta: {
         requiresAuth: true
@@ -40,9 +79,44 @@ const router = new Router({
       }
     },
     {
-      path: '/inlet',
-      name: 'Inlet',
-      component: Inlet
+      path: '/user',
+      name: 'User',
+      component: User,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/recommend',
+      name: 'Recommend',
+      component: Recommend,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/links',
+      name: 'Links',
+      component: Links,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/introduction',
+      name: 'Introduction',
+      component: Introduction,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/message',
+      name: 'Message',
+      component: Message,
+      meta: {
+        requiresAuth: true
+      }
     }
   ]
 })

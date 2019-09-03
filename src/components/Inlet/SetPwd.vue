@@ -46,9 +46,6 @@ export default {
   components: {},
   // props: ['row'],
   computed: {
-    InnerSize () {
-      return this.$store.getters.InnerSize
-    }
   },
   data () {
     return {

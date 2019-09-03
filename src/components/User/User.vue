@@ -1,5 +1,5 @@
 <template>
-  <span></span>
+  <span>这是用户设置 /user 页面</span>
 </template>
 
 <script>

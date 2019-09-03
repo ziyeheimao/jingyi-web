@@ -1,5 +1,5 @@
 <template>
-  <span></span>
+  <span>这是友情链接 /links </span>
 </template>
 
 <script>

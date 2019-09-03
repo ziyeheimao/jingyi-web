@@ -1,5 +1,5 @@
 <template>
-  <span></span>
+  <span>这是在线留言 /message </span>
 </template>
 
 <script>

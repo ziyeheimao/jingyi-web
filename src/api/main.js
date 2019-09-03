@@ -4,6 +4,9 @@ import DOMToImage from '@static/js/dom-to-image.js' // DOM渲染图片
 import FileSaver from '@static/js/FileSaver.js' // 文件转码
 const vue = new Vue()
 
+const serverUrl = 'http://127.0.0.1:666' // 服务器地址
+const defaultPic = 'http://127.0.0.1:666/userPic/defaultPic.png' // 默认头像
+
 // 正则规则
 const reg = {
   // eslint-disable-next-line
@@ -227,6 +230,8 @@ const mslineCtn = function (attr, label, ctnData) {
 
 // 导出方法 =================================================================================
 export default {
+  serverUrl,
+  defaultPic,
   reg,
   clone,
   openInfo,

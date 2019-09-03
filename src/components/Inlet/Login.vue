@@ -39,9 +39,6 @@ export default {
   components: {},
   // props: ['row'],
   computed: {
-    InnerSize () {
-      return this.$store.getters.InnerSize
-    },
     Token () {
       return this.$store.getters.Token
     }
@@ -84,6 +81,11 @@ export default {
               let token = data.token
               window.sessionStorage.setItem('token', token)
               this.$store.dispatch('AToken', token)
+
+              this.$store.dispatch('AUser', data.result[0])
+              let user = JSON.stringify(data.result[0]) // 对象转json字符串
+              window.sessionStorage.setItem('user', user)
+
               this.$router.push('/')
             }
           })

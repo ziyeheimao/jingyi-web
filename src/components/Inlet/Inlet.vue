@@ -25,28 +25,18 @@
         <div class="leftBottom">
           <img src="../../assets/inlet/Inlet1.png" alt="">
         </div>
-
       </el-main>
     </el-container>
 
-    <!-- 背景 -->
-    <!-- <BackgroundImg></BackgroundImg> -->
   </div>
 </template>
 <script>
-// import api from "@api"
-// import BackgroundImg from '../Background.vue'
-
-// import Header from '../Header.vue'
-
 import Login from './Login.vue'
 import Reg from './Reg.vue'
 import SetPwd from './SetPwd.vue'
 
 export default {
   components: {
-    // BackgroundImg, // 背景
-    // Header, // 页头
     Login, // 登录
     Reg, // 注册
     SetPwd // 改密码
@@ -67,14 +57,10 @@ export default {
       rules: {}
     }
   },
-  created () {
-  },
-  mounted () {
-  },
-  methods: {
-  },
-  watch: {
-  }
+  created () {},
+  mounted () {},
+  methods: {},
+  watch: {}
 }
 </script>
 

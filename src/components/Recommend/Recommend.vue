@@ -1,5 +1,5 @@
 <template>
-  <span></span>
+  <span>这是猜你喜欢 /recommend </span>
 </template>
 
 <script>

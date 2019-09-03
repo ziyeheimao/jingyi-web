@@ -13,20 +13,13 @@ const mutations = {
   },
   SToken: (state, data) => {
     state.Token = data
+  },
+  SRefresh: (state, data) => {
+    state.Refresh = data
+  },
+  SUser: (state, data) => {
+    state.User = data
   }
-  // // 静逸
-  // SHeight: (state, data) => { // 设置登录、注册、密码找回、用户中心等模块ctn高度
-  //   state.Hieght = data
-  // },
-
-  // // 页面下标（登录=0 注册=1 密码找回=2）
-  // SWebIndex: (state, data) => {
-  //   state.WebIndex = data // 获取下标判断当前显示哪个页面
-  // },
-  // SPageSizeChange: (state, data) => {
-  //   state.PageSizeChange = data // 页面大小变化
-  // }
-
 }
 
 export default mutations
