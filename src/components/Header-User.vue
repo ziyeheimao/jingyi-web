@@ -1,6 +1,6 @@
 <template>
   <div id="container">
-    <div id="user">
+    <div id="user" @click="userSet">
       <el-avatar :src="User.userPicUrl !== null ? User.userPicUrl : defaultPic" :size="size" :fit="fits[0]"></el-avatar>
       <!-- @mouseenter.native="mouse(1)" @mouseleave.native="mouse(0)" -->
       <span class="userName">{{User.userName}}</span>

@@ -14,6 +14,17 @@ const reg = {
   phone: /^1([3-9][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/
 }
 
+const trim = function (str) {
+  str = str.replace(/^\s+/, '')
+  for (var i = str.length - 1; i >= 0; i--) {
+    if (/\S/.test(str.charAt(i))) {
+      str = str.substring(0, i + 1)
+      break
+    }
+  }
+  return str
+}
+
 // 克隆对象
 const clone = function (obj) {
   var newObj = {}
@@ -21,6 +32,11 @@ const clone = function (obj) {
     newObj[key] = obj[key]
   }
   return newObj
+}
+
+// 数组去重
+const distinct = function (...rest) {
+  return Array.from(new Set([...rest]))
 }
 
 // 消息提示
@@ -233,7 +249,9 @@ export default {
   serverUrl,
   defaultPic,
   reg,
+  trim,
   clone,
+  distinct,
   openInfo,
   openSuccessInfo,
   openWarningInfo,

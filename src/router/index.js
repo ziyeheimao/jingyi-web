@@ -4,6 +4,12 @@ import store from '@store/index.js'
 import Router from 'vue-router'
 
 // 路由懒加载
+// 测试
+const A = resolve => {
+  require.ensure(['@components/A.vue'], () => {
+    resolve(require('@components/A.vue'))
+  })
+}
 // 入口(登陆、注册、改密码)
 const Inlet = resolve => {
   require.ensure(['@components/Inlet/Inlet.vue'], () => {
@@ -58,6 +64,11 @@ Vue.use(Router)
 const router = new Router({
   // mode: 'history',
   routes: [
+    {
+      path: '/test', // 测试接口
+      name: 'A',
+      component: A
+    },
     {
       path: '/inlet',
       name: 'Inlet',
