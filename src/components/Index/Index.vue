@@ -13,6 +13,7 @@
 
     <section>
       内容
+      <el-button @click='get'>获取分类</el-button>
     </section>
 
     <footer>分页</footer>
@@ -22,7 +23,7 @@
 <script>
 import Search from './Index-Search'
 
-// import api from '@api'
+import api from '@api'
 import main from '@main'
 
 export default {
@@ -107,6 +108,12 @@ export default {
       let arr = [...lis]
       lis[arr.length - 1].setAttribute('contenteditable', 'true')
       lis[arr.length - 1].focus()
+    },
+
+    get () {
+      api.classGet().then(({data}) => {
+        console.log(data)
+      })
     }
   },
   created () {

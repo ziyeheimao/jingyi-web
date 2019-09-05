@@ -2,7 +2,6 @@
   <div id="container">
     <div id="user" @click="userSet">
       <el-avatar :src="User.userPicUrl !== null ? User.userPicUrl : defaultPic" :size="size" :fit="fits[0]"></el-avatar>
-      <!-- @mouseenter.native="mouse(1)" @mouseleave.native="mouse(0)" -->
       <span class="userName">{{User.userName}}</span>
     </div>
 
@@ -47,18 +46,6 @@ export default {
       window.sessionStorage.removeItem('user')
       this.$router.push('/inlet')
     }
-
-    // 鼠标移入移出
-    // mouse (code) {
-    //   switch (code) {
-    //     case 1:
-    //       this.size = 70
-    //       break
-    //     case 0:
-    //       this.size = 45
-    //       break
-    //   }
-    // }
   },
   beforeCreate () {},
   created () {

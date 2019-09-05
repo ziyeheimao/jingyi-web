@@ -28,5 +28,29 @@ export default {
   // 修改密码
   forgetPassword (data) {
     return axios.put(`/user/forgetPassword`, data)
+  },
+
+  // -------------------------------------------------class-----------------------------------------------------
+
+  // 添加分类
+  classAdd (data) {
+    return axios.post(`/ctn/class/add`, data)
+  },
+
+  // 删除分类
+  classDel (classId) {
+    return axios.delete(`/ctn/class/del?classId=${classId}`)
+  },
+
+  classUpdata (data) {
+    return axios.put(`/ctn/class/updata`, data)
+  },
+
+  // 获取分类
+  classGet () {
+    return axios.get(`/ctn/class/get`)
   }
+
+  // -------------------------------------------------class-----------------------------------------------------
+
 }

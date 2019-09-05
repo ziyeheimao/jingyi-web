@@ -59,6 +59,13 @@ const Message = resolve => {
   })
 }
 
+// 404
+const NotFound = resolve => {
+  require.ensure(['@components/NotFound/NotFound.vue'], () => {
+    resolve(require('@components/NotFound/NotFound.vue'))
+  })
+}
+
 Vue.use(Router)
 
 const router = new Router({
@@ -128,6 +135,15 @@ const router = new Router({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: '/404',
+      name: 'NotFound',
+      component: NotFound
+    },
+    {
+      path: '*', // 此处需特别注意置于最底部
+      redirect: '/404'
     }
   ]
 })
