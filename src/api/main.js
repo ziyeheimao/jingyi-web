@@ -39,6 +39,41 @@ const distinct = function (...rest) {
   return Array.from(new Set([...rest]))
 }
 
+// 限制数组为指定长度
+const len = function (arr, len) {
+  if (arr.length === undefined || arr === undefined) {
+    return []
+  }
+  let len_ = arr.length
+  let index = 0
+  if (len_ > len) {
+    index = len_ - len
+  }
+  for (let i = 0; i < index; i++) {
+    arr.pop()
+  }
+  return arr
+}
+
+// 去掉空格（两种方法都可以）
+const delSpace = function (str) {
+  str = str.replace(/\+/g, '')
+  return str
+  // str = str.replace(/[ ]/g, '')
+}
+
+// 去掉回车换行
+const delReturn = function (str) {
+  str = str.replace(/[\r\n]/g, '')
+  return str
+}
+
+// 去掉 ‘-’
+const delLine = function (str) {
+  str = str.replace(/-/g, '')
+  return str
+}
+
 // 消息提示
 const openInfo = function (msg) {
   vue.$message({
@@ -244,7 +279,7 @@ const mslineCtn = function (attr, label, ctnData) {
   return obj2
 }
 
-// 导出方法 =================================================================================
+// 导出
 export default {
   serverUrl,
   defaultPic,
@@ -252,6 +287,10 @@ export default {
   trim,
   clone,
   distinct,
+  len,
+  delSpace,
+  delReturn,
+  delLine,
   openInfo,
   openSuccessInfo,
   openWarningInfo,

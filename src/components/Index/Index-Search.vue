@@ -2,17 +2,18 @@
   <div id="search" ref="search">
     <el-input placeholder="人傻才要多xiao习(๑•̀ㅂ•́)و✧" clearable v-model="keyword" size='small' id="keyword"
       @keyup.native="keyup($event)" @focus="focus(1)" @blur="focus(0)">
+
       <el-select v-model="type" slot="prepend" placeholder="请选择">
         <el-option v-for="(v, k) in searchEngines" :key="k" :label="v.name" :value="v.id"></el-option>
       </el-select>
+
       <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
     </el-input>
 
     <ul class="hotWords" id="hotWords" :style="'width:'+hotWordsWidth+'px;'+show"
       @mouseenter='mouseenter' @mouseleave='mouseleave'>
-      <!-- mouseenter：当鼠标移入某元素时触发。 -->
-      <!-- mouseleave：当鼠标移出某元素时触发。 -->
-      <li v-for="(v, k) in res.hotWords" :key="k" @click="clickLi(v)">
+      <!-- mouseenter：当鼠标移入某元素时触发 --><!-- mouseleave：当鼠标移出某元素时触发 -->
+      <li v-for="(v, k) in res.hotWords" :key="k" @click="clickLi(v)" :class="k === activateIndex ? 'activate' : ''">
         <span :style="'max-width:'+(hotWordsWidth-35)+'px'">{{v}}</span>
         <i class="el-icon-close" v-show="mode" @click.stop="del(v)"></i>
       </li>
@@ -25,7 +26,6 @@
 import main from '@main'
 
 import $ from 'jquery'
-
 // const jsonp = require('jsonp')
 // import jsonp from 'jsonp'
 
@@ -40,11 +40,12 @@ export default {
     return {
       keyword: '', // 关键字
       type: 0, // 搜索引擎
+      activateIndex: -1,
 
       searchEngines: [ // 搜索引擎字典
         {name: '百度', id: 0, url: 'https://www.baidu.com/s?wd='},
-        {name: '360', id: 1, url: 'https://www.so.com/s?ie=utf-8&fr=none&src=360sou_newhome&q='},
-        {name: '谷歌', id: 2, url: 'https://www.google.com.hk/search?q='}
+        {name: '谷歌', id: 2, url: 'https://www.google.com.hk/search?q='},
+        {name: '360', id: 1, url: 'https://www.so.com/s?ie=utf-8&fr=none&src=360sou_newhome&q='}
         // {name: '菜鸟', id: 3, url: 'http://www.runoob.com/?s='},
         // {name: 'w3', id: 4, url: 'http://www.google.com.hk/search?sitesearch=w3school.com.cn&as_q='}
       ],
@@ -65,9 +66,9 @@ export default {
     keywordChange () {
       clearTimeout(this.changeTimer)
       this.changeTimer = setTimeout(() => {
-        if (this.keyword === '' || this.res.hotWords.length === 0) {
-          this.mode = true
-          this.historyMode()
+        // 关键词                           热词
+        if (this.keyword === '') {
+          this.historyMode() // 判断使用搜索历史还是 搜索热词
         } else {
           this.hotWords() // 搜索辅助
         }
@@ -77,7 +78,23 @@ export default {
     // 按键弹起
     keyup (e) {
       if (e.keyCode === 13) {
-        this.search()
+        if (this.activateIndex === -1) {
+          this.search()
+        } else {
+          this.keyword = this.res.hotWords[this.activateIndex]
+          this.search()
+        }
+      } else if (e.keyCode === 38) {
+        switch (this.activateIndex) {
+          case -1:
+            this.activateIndex = this.res.hotWords.length - 1
+            break
+          default:
+            this.activateIndex--
+            break
+        }
+      } else if (e.keyCode === 40) {
+        this.activateIndex === this.res.hotWords.length - 1 ? this.activateIndex = -1 : this.activateIndex++
       }
     },
 
@@ -94,12 +111,14 @@ export default {
 
         if (history === null) {
           let arr = [this.keyword]
-          searchHistory = JSON.stringify(arr) // 转数组
+          searchHistory = JSON.stringify(arr) // 转json
         } else {
           let historyArr = JSON.parse(history)
           historyArr.unshift(this.keyword)
           historyArr = main.distinct(...historyArr) // 数组去重
-          searchHistory = JSON.stringify(historyArr) // 转json
+          // 如果数组长度大于15 尾巴切掉 只留15个记录
+          historyArr = main.len(historyArr, 15) // 限制历史记录个数
+          searchHistory = JSON.stringify(historyArr) // 转数组
         }
         window.localStorage.setItem('searchHistory', searchHistory)
       }, 100)
@@ -107,6 +126,12 @@ export default {
 
     // 百度热词
     hotWords () {
+      if (this.keyword === '') {
+        this.show = ''
+        return
+      } else {
+        this.show = 'display:block;'
+      }
       let url = 'https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=' + this.keyword + '&json=1&p=3&sid=20144_1467_19033_20515_18240_17949_20388_20456_18133_17001_15202_11615&req=2&csor=2&pwd=s&cb=jQuery110207612423721154653_1467355506619&_=1467355506623'
 
       // jsonp(url, {params: 'jQuery110207612423721154653_1467355506619'}, (err, data) => {
@@ -134,7 +159,6 @@ export default {
         success: (data) => {
           this.mode = false
           this.res.hotWords = data.s
-          // console.log('热词', data.s)
         }
       })
     },
@@ -155,8 +179,7 @@ export default {
       if (code === 1) { // 获取焦点
         this.show = 'display:block;'
         if (this.keyword === '' || this.res.hotWords.length === 0) {
-          this.mode = true
-          this.historyMode()
+          this.historyMode() // 判断使用搜索历史还是 搜索热词
         }
       } else if (code === 0) { // 失去焦点
         setTimeout(() => {
@@ -169,17 +192,18 @@ export default {
 
     // 判断使用搜索历史还是 搜索热词
     historyMode () {
+      this.mode = true
       let history = window.localStorage.getItem('searchHistory')
 
-      if (history === null) {
-        return false
+      if (history === null || history.length === 0) {
+        this.hotWords()
       } else {
         let historyArr = JSON.parse(history)
         this.res.hotWords = historyArr
       }
     },
 
-    // 删除热词
+    // 删除某条搜索记录
     del (value) {
       let history = window.localStorage.getItem('searchHistory') // 取
       let historyArr = JSON.parse(history) // 转数组
@@ -199,6 +223,7 @@ export default {
     },
     // 鼠标移出
     mouseleave () {
+      this.activateIndex = -1 // 激活的选项复位
       this.hover = false
       this.focus(0)
       document.getElementById('keyword').blur()
@@ -257,11 +282,17 @@ export default {
   background: #ecf8ff;
   color: #409eff;
 }
+/* activate */
+#search>.hotWords>li.activate{
+  background: #ecf8ff;
+  color: #409eff;
+}
 #search>.hotWords>li>span{
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 /* close */
 #search>.hotWords>li>i:hover{
   color: red;

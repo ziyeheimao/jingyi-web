@@ -41,9 +41,6 @@ export default {
 
     // 退出登录
     quit () {
-      this.$store.commit('SToken', '')
-      window.sessionStorage.removeItem('token')
-      window.sessionStorage.removeItem('user')
       this.$router.push('/inlet')
     }
   },
@@ -104,6 +101,7 @@ export default {
   border-bottom-right-radius: 5px;
   overflow: hidden;
   display: none;
+  box-shadow: 2px 2px 5px #00000030;
 }
 #userSet>li{
   background: #fff;

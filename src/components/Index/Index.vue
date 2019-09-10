@@ -5,7 +5,8 @@
         <li v-for="(v, k) in tabsData" :key="k"
           @click="clickLi(v.classId, $event)" :class="v.classId === activeLi ? 'active' : ''"
           @blur="blurLi(v.classId, $event)"
-        >{{v.name}}</li>
+          @keyup="keyupLi($event)"
+        >{{v.className}}<!-- <div></div> --></li>
       </ul>
 
       <Search></Search>
@@ -13,7 +14,6 @@
 
     <section>
       内容
-      <el-button @click='get'>获取分类</el-button>
     </section>
 
     <footer>分页</footer>
@@ -45,27 +45,41 @@ export default {
     return {
       activeLi: 0,
       tabsData: [
-        { name: '全部', classId: 0 },
-        { name: '学习', classId: 1 },
-        { name: '音乐', classId: 2 },
-        { name: '视频', classId: 3 },
-        { name: '游戏', classId: 4 },
-        { name: '其他', classId: 5 },
-        { name: '+', classId: -1 }
+        // { className: '全部', classId: 0 },
+        // { className: '学习', classId: 1 },
+        // { className: '音乐', classId: 2 },
+        // { className: '视频', classId: 3 },
+        // { className: '游戏', classId: 4 },
+        // { className: '其他', classId: 5 },
+        // { className: '+', classId: -1 }
       ],
       doubleClick: null,
-      double: false // 双击中~
+      double: false, // 双击中~
+      id: null
     }
   },
   methods: {
     clickLi (classId, e) {
       if (this.double === true) { // 《双击》的第二次 // 进入《修改》当前分类名状态
-        e.target.setAttribute('contenteditable', 'true')
-      } else { // 《单击》 // 请求《查询》内容卡片
+        if (classId !== 0 && classId !== -1) {
+          if (this.id === classId) {
+            e.target.setAttribute('contenteditable', 'true')
+            e.target.focus()
+          }
+        }
+      } else { // 单击 单击触发<查询>当前分类下卡片
         this.double = true
-        console.log('触发单击')
+        this.id = classId
         if (classId === -1) {
-          this.add()
+          // 添加分类 (DOM, 添加数据失焦时触发)
+          this.tabsData.splice(this.tabsData.length - 1, 0, { name: '', classId: '' })
+
+          let ul = document.getElementById('tabs2')
+          let lis = ul.children
+
+          let arr = [...lis]
+          lis[arr.length - 1].setAttribute('contenteditable', 'true')
+          lis[arr.length - 1].focus()
         }
       }
 
@@ -81,42 +95,93 @@ export default {
     // li失去焦点时自动《保存修改》的内容
     blurLi (classId, e) {
       e.target.setAttribute('contenteditable', 'false') // 恢复不可修改状态
+
+      let newInner = e.target.innerText // 当前内容
+      let oldInner = main.findAttrVal(classId, this.tabsData, 'classId', 'className') // 之前内容
+
       // 判断内容是否有变化 有变化发请求更新数据 无变化无视
-      if (main.trim(e.target.innerText) === '') { // 《删除》当前空li
+      if (main.trim(newInner) === '') { // 《删除》当前空li
         let ul = document.getElementById('tabs2')
         let lis = ul.children
         let arr = [...lis]
-        // console.log('空', lis[arr.length - 2])
         ul.removeChild(lis[arr.length - 2])
+
+        this.del(classId) // 获取 id 发请求<删除>
         return
       }
 
-      if (e.target.innerText !== main.findAttrVal(classId, this.tabsData, 'classId', 'name')) {
-        console.log('内容变了,发请求')
-      } else {
-        console.log('内容没变,无视')
+      if (newInner !== oldInner) {
+        // console.log('内容变化时发请求', classId)
+        // console.log('当前内容', newInner)
+        // console.log('之前内容', oldInner)
+        if (oldInner === undefined) { // 新增
+          this.add(newInner)
+        } else { // 修改
+          this.updata(classId, newInner)
+        }
       }
     },
 
-    // 添加新的分类
-    add () {
-      this.tabsData.splice(this.tabsData.length - 1, 0, { name: '', classId: '' })
-
-      let ul = document.getElementById('tabs2')
-      let lis = ul.children
-
-      let arr = [...lis]
-      lis[arr.length - 1].setAttribute('contenteditable', 'true')
-      lis[arr.length - 1].focus()
+    // 回车 = 保存 = 失去焦点
+    keyupLi (e) {
+      if (e.keyCode === 13) {
+        e.target.innerText = main.delReturn(e.target.innerText) // 去除回车
+        e.target.blur()
+      }
     },
 
+    // --------------------------------------------------------------------------------------------------------
+    // 新增分类
+    add (className) {
+      let req = { className }
+      api.classAdd(req).then(res => {
+        this._info(res)
+      })
+    },
+
+    // 删除分类
+    del (classId) {
+      if (!classId) { return }
+      api.classDel(classId).then(res => {
+        this._info(res)
+      })
+    },
+
+    // 修改分类
+    updata (classId, className) {
+      let req = { classId, className }
+      api.classUpdata(req).then(res => {
+        this._info(res)
+      })
+    },
+
+    // 获取分类
     get () {
       api.classGet().then(({data}) => {
-        console.log(data)
+        if (data.code === 0) {
+          setTimeout(() => {
+            this.tabsData = []
+          }, 0)
+
+          setTimeout(() => {
+            this.tabsData = [{ className: '全部', classId: 0 }, ...data.result, { className: '+', classId: -1 }]
+          }, 0)
+        }
       })
+    },
+
+    // 提示信息
+    _info (res) {
+      if (res.data.code === 0) {
+        main.openSuccessInfo(res.data.msg)
+        this.get() // 更新数据
+      } else {
+        main.openErrorInfo(res.data.msg)
+      }
     }
   },
   created () {
+    this.get()
   },
   watch: {}
 }
@@ -161,7 +226,7 @@ header{
   -ms-user-select: none;
   user-select: none;
 }
-#tabs2>li>div{
+/* #tabs2>li>div{
   display: none;
   width: 100%;
   height: 2px;
@@ -169,19 +234,19 @@ header{
   position: absolute;
   left: 0;
   bottom: 0;
-}
+} */
 /* 鼠标悬停 */
 #tabs2>li:hover{
   color: #85ce61;
 }
-#tabs2>li:hover>div{
+/* #tabs2>li:hover>div{
   display: block;
-}
+} */
 /* 激活状态 */
 #tabs2>li.active{
   color: #85ce61;
 }
-#tabs2>li.active>div{
+/* #tabs2>li.active>div{
   display: block;
-}
+} */
 </style>

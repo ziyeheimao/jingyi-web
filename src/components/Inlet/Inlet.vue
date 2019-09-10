@@ -57,7 +57,10 @@ export default {
       rules: {}
     }
   },
-  created () {},
+  created () {
+    sessionStorage.clear() // 清除缓存
+    this.$store.commit('SToken')
+  },
   mounted () {},
   methods: {},
   watch: {}

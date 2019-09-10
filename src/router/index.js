@@ -5,9 +5,9 @@ import Router from 'vue-router'
 
 // 路由懒加载
 // 测试
-const A = resolve => {
-  require.ensure(['@components/A.vue'], () => {
-    resolve(require('@components/A.vue'))
+const Test = resolve => {
+  require.ensure(['@components/Test.vue'], () => {
+    resolve(require('@components/Test.vue'))
   })
 }
 // 入口(登陆、注册、改密码)
@@ -73,13 +73,17 @@ const router = new Router({
   routes: [
     {
       path: '/test', // 测试接口
-      name: 'A',
-      component: A
+      name: 'Test',
+      component: Test
     },
     {
       path: '/inlet',
       name: 'Inlet',
       component: Inlet
+    },
+    {
+      path: '/login',
+      redirect: '/inlet' // 重定向到入口页面
     },
     {
       path: '/',
@@ -95,6 +99,10 @@ const router = new Router({
       meta: {
         requiresAuth: true
       }
+    },
+    {
+      path: '/',
+      redirect: '/index'
     },
     {
       path: '/user',

@@ -26,11 +26,12 @@
       </el-input>
     </div>
 
+    <el-button @click="get">获取</el-button>
   </div>
 </template>
 
 <script>
-// import api from '../../../../api'
+import api from '@api'
 export default {
   components: {
     // x
@@ -48,7 +49,11 @@ export default {
     }
   },
   methods: {
-
+    get () {
+      api.classGet().then(({data}) => {
+        console.log(data)
+      })
+    }
   },
   beforeCreate () {},
   created () {},
