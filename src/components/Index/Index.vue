@@ -1,11 +1,15 @@
 <template>
   <div id="ctn" :style="'width:'+width+'px;height:'+height+'px;'">
     <header>
-      <ul id="tabs2">
+      <ul id="tabs2" ref="tabs2">
         <li v-for="(v, k) in tabsData" :key="k"
-          @click="clickLi(v.classId, $event)" :class="v.classId === activeLi ? 'active' : ''"
+          :class="[v.classId === activeLi ? 'active' : '', outline === k ? 'outline' : '']"
+          @click="clickLi(v.classId, $event)"
           @blur="blurLi(v.classId, $event)"
           @keyup="keyupLi($event)"
+          @mousedown="mousedownLi($event, k, v.classId)"
+          @mouseup="mouseupLi($event, v.classId)"
+          @mouseleave='mouseleaveLi($event, v.classId)'
         >{{v.className}}<!-- <div></div> --></li>
       </ul>
 
@@ -26,6 +30,8 @@ import Search from './Index-Search'
 import api from '@api'
 import main from '@main'
 
+// import $ from 'jquery'
+
 export default {
   components: {
     Search
@@ -43,7 +49,8 @@ export default {
   },
   data () {
     return {
-      activeLi: 0,
+      activeLi: 0, // 激活的li 样式
+      outline: -1, // 鼠标按下时描边样式
       tabsData: [
         // { className: '全部', classId: 0 },
         // { className: '学习', classId: 1 },
@@ -59,6 +66,29 @@ export default {
     }
   },
   methods: {
+    // 初始化
+    init () {
+      // 获取ul下的li相对ul的距离,并转为定位布局 为拖拽做准备
+      var aLi = document.querySelectorAll('#tabs2>li') // 获取所有的li
+
+      let ul = document.getElementById('#tabs2')
+      let width = this.$refs.tabs2.clientWidth
+
+      var aPs = [] // 存放所有li元素的位置
+      for (let i = 0, len = aLi.length; i < len; i++) {
+        aPs.push([aLi[i].offsetTop, aLi[i].offsetLeft])
+
+        console.log(aPs)
+        setTimeout(function () {
+          aLi[i].style.position = 'absolute' // 设置属性快于获取属性，外加cpu的多线程处理机制 导致这里出现bug
+          aLi[i].style.top = aPs[i][0] + 'px' // 所以需要定时器包裹
+          aLi[i].style.left = aPs[i][1] + 'px'
+        }, 0)
+      }
+
+      ul.style.width = width + 'px'
+    },
+
     clickLi (classId, e) {
       if (this.double === true) { // 《双击》的第二次 // 进入《修改》当前分类名状态
         if (classId !== 0 && classId !== -1) {
@@ -130,6 +160,28 @@ export default {
       }
     },
 
+    // class的位置移动------------------------------------------------------------------------------------------
+    // 鼠标按下
+    mousedownLi (e, key, classId) {
+      // e.target.outline: 1px solid red;
+      if ([0, -1].includes(classId)) {
+        return
+      }
+      this.outline = key
+      console.log('按下', e.target)
+    },
+    // 鼠标弹起
+    mouseupLi (e) {
+      this.outline = -1
+      console.log('弹起', e.target)
+    },
+    // 鼠标移出 (防止弹起事件未触发)
+    mouseleaveLi (e) {
+      if (this.outline !== -1) {
+        this.outline = -1
+      }
+    },
+
     // --------------------------------------------------------------------------------------------------------
     // 新增分类
     add (className) {
@@ -159,12 +211,20 @@ export default {
     get () {
       api.classGet().then(({data}) => {
         if (data.code === 0) {
+          // 按sort的属性值 排序
+          let arr = main.bubbleSort(data.result, 'sort')
+
+          // 貌似CPU 多线程处理导致的BUG ↓ 使用异步函数包裹处理
           setTimeout(() => {
             this.tabsData = []
           }, 0)
 
           setTimeout(() => {
-            this.tabsData = [{ className: '全部', classId: 0 }, ...data.result, { className: '+', classId: -1 }]
+            this.tabsData = [{ className: '全部', classId: 0 }, ...arr, { className: '+', classId: -1 }]
+
+            // setTimeout(() => {
+            //   this.init()
+            // }, 0)
           }, 0)
         }
       })
@@ -183,6 +243,7 @@ export default {
   created () {
     this.get()
   },
+  mounted () {},
   watch: {}
 }
 
@@ -211,6 +272,7 @@ header{
 #tabs2{
   height: 40px;
   display: inline-block;
+  position: relative;
 }
 #tabs2>li{
   float: left;
@@ -249,4 +311,9 @@ header{
 /* #tabs2>li.active>div{
   display: block;
 } */
+
+/* 鼠标按下时 */
+.outline{
+  outline: 2px solid #fe8181;
+}
 </style>

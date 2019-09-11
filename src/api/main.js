@@ -39,6 +39,37 @@ const distinct = function (...rest) {
   return Array.from(new Set([...rest]))
 }
 
+// 数组对象(按对象下某个字段的属性值)冒泡排序 字段的数值不能重复
+const bubbleSort = function (arr, field) {
+  let newArr = [] // 排序 字段 field 形成一个只有编号排好序的数组,再把原始数据对号入座
+  let newArr2 = [] // 最后返回的完整数据
+  for (let i of arr) {
+    newArr.push(i[field])
+  }
+
+  for (let i = 0; i < newArr.length; i++) {
+    newArr[i] = parseFloat(newArr[i])
+  }
+
+  newArr = newArr.sort((a, b) => {
+    return a - b
+  })
+
+  for (let i = 0; i < newArr.length; i++) {
+    newArr[i] = newArr[i] + ''
+    if (newArr[i].indexOf('.') === -1) {
+      newArr[i] += '.0'
+    }
+
+    for (let j of arr) {
+      if (j.sort === newArr[i]) {
+        newArr2.push(j)
+      }
+    }
+  }
+  return newArr2
+}
+
 // 限制数组为指定长度
 const len = function (arr, len) {
   if (arr.length === undefined || arr === undefined) {
@@ -283,6 +314,7 @@ const mslineCtn = function (attr, label, ctnData) {
 export default {
   serverUrl,
   defaultPic,
+  bubbleSort,
   reg,
   trim,
   clone,
