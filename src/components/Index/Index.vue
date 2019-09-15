@@ -1,40 +1,41 @@
 <template>
   <div id="ctn" :style="'width:'+width+'px;height:'+height+'px;'">
     <header>
-      <ul id="tabs2" ref="tabs2">
-        <li v-for="(v, k) in tabsData" :key="k"
-          :class="[v.classId === activeLi ? 'active' : '', outline === k ? 'outline' : '']"
-          @click="clickLi(v.classId, $event)"
-          @blur="blurLi(v.classId, $event)"
-          @keyup="keyupLi($event)"
-          @mousedown="mousedownLi($event, k, v.classId)"
-          @mouseup="mouseupLi($event, v.classId)"
-          @mouseleave='mouseleaveLi($event, v.classId)'
-        >{{v.className}}<!-- <div></div> --></li>
-      </ul>
+      <!-- 小导航 -->
+      <nav :style="'max-width:'+ulWidth+'px'">
+        <ul id="tabs2" ref="tabs2">
+          <li v-for="(v, k) in tabsData" :key="k"
+            class="box"
+            :class="[v.classId === activeLi ? 'active' : '']"
+            @click="clickLi(v.classId, $event)"
+            @blur="blurLi(v.classId, $event)"
+            @keyup="keyupLi($event)"
 
+            v-dragging="(v.classId !== 0 && v.classId !== -1) ? { list: tabsData, item: v, group: 'group1' } : {}"
+          >{{v.className}}</li>
+        </ul>
+      </nav>
+
+      <!-- 搜索 -->
       <Search></Search>
     </header>
 
-    <section>
-      内容
-    </section>
-
-    <footer>分页</footer>
+    <!-- 内容区域 -->
+    <Box class="ctnBox"></Box>
   </div>
 </template>
 
 <script>
 import Search from './Index-Search'
+import Box from './Index-Box'
 
 import api from '@api'
 import main from '@main'
 
-// import $ from 'jquery'
-
 export default {
   components: {
-    Search
+    Search,
+    Box
   },
   computed: {
     InnerSize () {
@@ -45,12 +46,14 @@ export default {
     },
     height () {
       return this.InnerSize.height - 60 - 40 - 20
+    },
+    ulWidth () {
+      return this.width - 40 - 352 - 20
     }
   },
   data () {
     return {
       activeLi: 0, // 激活的li 样式
-      outline: -1, // 鼠标按下时描边样式
       tabsData: [
         // { className: '全部', classId: 0 },
         // { className: '学习', classId: 1 },
@@ -62,51 +65,28 @@ export default {
       ],
       doubleClick: null,
       double: false, // 双击中~
-      id: null
+      classExchangeTimer: null, // 交换分类标签位置时节流,防止多次发请求
+      classId: null
     }
   },
   methods: {
-    // 初始化
-    init () {
-      // 获取ul下的li相对ul的距离,并转为定位布局 为拖拽做准备
-      var aLi = document.querySelectorAll('#tabs2>li') // 获取所有的li
-
-      let ul = document.getElementById('#tabs2')
-      let width = this.$refs.tabs2.clientWidth
-
-      var aPs = [] // 存放所有li元素的位置
-      for (let i = 0, len = aLi.length; i < len; i++) {
-        aPs.push([aLi[i].offsetTop, aLi[i].offsetLeft])
-
-        console.log(aPs)
-        setTimeout(function () {
-          aLi[i].style.position = 'absolute' // 设置属性快于获取属性，外加cpu的多线程处理机制 导致这里出现bug
-          aLi[i].style.top = aPs[i][0] + 'px' // 所以需要定时器包裹
-          aLi[i].style.left = aPs[i][1] + 'px'
-        }, 0)
-      }
-
-      ul.style.width = width + 'px'
-    },
-
     clickLi (classId, e) {
       if (this.double === true) { // 《双击》的第二次 // 进入《修改》当前分类名状态
         if (classId !== 0 && classId !== -1) {
-          if (this.id === classId) {
+          if (this.classId === classId) {
             e.target.setAttribute('contenteditable', 'true')
             e.target.focus()
           }
         }
       } else { // 单击 单击触发<查询>当前分类下卡片
         this.double = true
-        this.id = classId
+        this.classId = classId
         if (classId === -1) {
           // 添加分类 (DOM, 添加数据失焦时触发)
           this.tabsData.splice(this.tabsData.length - 1, 0, { name: '', classId: '' })
 
           let ul = document.getElementById('tabs2')
           let lis = ul.children
-
           let arr = [...lis]
           lis[arr.length - 1].setAttribute('contenteditable', 'true')
           lis[arr.length - 1].focus()
@@ -125,6 +105,7 @@ export default {
     // li失去焦点时自动《保存修改》的内容
     blurLi (classId, e) {
       e.target.setAttribute('contenteditable', 'false') // 恢复不可修改状态
+      e.target.innerText = main.trim(e.target.innerText) // 去首尾空格
 
       let newInner = e.target.innerText // 当前内容
       let oldInner = main.findAttrVal(classId, this.tabsData, 'classId', 'className') // 之前内容
@@ -136,14 +117,11 @@ export default {
         let arr = [...lis]
         ul.removeChild(lis[arr.length - 2])
 
-        this.del(classId) // 获取 id 发请求<删除>
+        this.del(classId) // 获取 classId 发请求<删除>
         return
       }
 
       if (newInner !== oldInner) {
-        // console.log('内容变化时发请求', classId)
-        // console.log('当前内容', newInner)
-        // console.log('之前内容', oldInner)
         if (oldInner === undefined) { // 新增
           this.add(newInner)
         } else { // 修改
@@ -161,26 +139,6 @@ export default {
     },
 
     // class的位置移动------------------------------------------------------------------------------------------
-    // 鼠标按下
-    mousedownLi (e, key, classId) {
-      // e.target.outline: 1px solid red;
-      if ([0, -1].includes(classId)) {
-        return
-      }
-      this.outline = key
-      console.log('按下', e.target)
-    },
-    // 鼠标弹起
-    mouseupLi (e) {
-      this.outline = -1
-      console.log('弹起', e.target)
-    },
-    // 鼠标移出 (防止弹起事件未触发)
-    mouseleaveLi (e) {
-      if (this.outline !== -1) {
-        this.outline = -1
-      }
-    },
 
     // --------------------------------------------------------------------------------------------------------
     // 新增分类
@@ -221,11 +179,16 @@ export default {
 
           setTimeout(() => {
             this.tabsData = [{ className: '全部', classId: 0 }, ...arr, { className: '+', classId: -1 }]
-
-            // setTimeout(() => {
-            //   this.init()
-            // }, 0)
           }, 0)
+        }
+      })
+    },
+
+    // 交换分类
+    exchange (req) {
+      api.classExchange(req).then(res => {
+        if (res.data.code === 0) {
+          this.get()
         }
       })
     },
@@ -243,7 +206,28 @@ export default {
   created () {
     this.get()
   },
-  mounted () {},
+  mounted () {
+    // 碰撞检测
+    this.$dragging.$on('dragged', (data) => {
+      clearTimeout(this.classExchangeTimer)
+
+      this.classExchangeTimer = setTimeout(() => {
+        console.log('dragged碰撞检测', data.draged.classId, data.draged.sort, data.to.classId, data.to.sort)
+        let req = {
+          sort1: data.draged.sort,
+          sort2: data.to.sort,
+          classId1: data.draged.classId,
+          classId2: data.to.classId
+        }
+        this.exchange(req)
+      }, 500)
+    })
+
+    // 拖拽结束 dragend
+    this.$dragging.$on('dragend', function (data) {
+      // console.log('dragend拖拽结束时返回组(用于多组拖拽时判断哪一组)', data)
+    })
+  },
   watch: {}
 }
 
@@ -255,8 +239,6 @@ export default {
 }
 #ctn{
   margin: 0 auto;
-  width: 1100px;
-  height: 600px;
 }
 header{
   background: #fff;
@@ -272,15 +254,12 @@ header{
 #tabs2{
   height: 40px;
   display: inline-block;
-  position: relative;
 }
 #tabs2>li{
-  float: left;
-  padding: 0 10px;
+  padding: 0 7px;
   font-size: 1.4rem;
   cursor: pointer;
   line-height: 40px;
-  position: relative;
 
   /* 文字不可被选中 */
   -webkit-user-select: none;
@@ -288,32 +267,33 @@ header{
   -ms-user-select: none;
   user-select: none;
 }
-/* #tabs2>li>div{
-  display: none;
-  width: 100%;
-  height: 2px;
-  background: #85ce61;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-} */
 /* 鼠标悬停 */
 #tabs2>li:hover{
   color: #85ce61;
 }
-/* #tabs2>li:hover>div{
-  display: block;
-} */
 /* 激活状态 */
 #tabs2>li.active{
   color: #85ce61;
 }
-/* #tabs2>li.active>div{
-  display: block;
-} */
 
-/* 鼠标按下时 */
-.outline{
-  outline: 2px solid #fe8181;
+/* ----------------------------------------------------------------------------------------------- */
+
+/* 父元素 */
+
+/* 子元素 */
+.box {
+  padding: 5px 15px;
+  display: inline-block;
+  text-align: center;
+  /* transition: transform 0.3s; */
+}
+/* 被碰撞位置样式变化 */
+.box.dragging {
+  /* transform: scale(1.1); */
+  outline: 1px solid red;
+  background-color: #85ce6130;
+}
+.ctnBox{
+  margin-top: 20px;
 }
 </style>

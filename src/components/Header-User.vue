@@ -23,6 +23,9 @@ export default {
   // props: [''],
   computed: {
     User () {
+      if (this.$store.getters.User === null) {
+        return {userPicUrl: null}
+      }
       return this.$store.getters.User
     }
   },

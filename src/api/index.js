@@ -42,6 +42,7 @@ export default {
     return axios.delete(`/ctn/class/del?classId=${classId}`)
   },
 
+  // 修改分类
   classUpdata (data) {
     return axios.put(`/ctn/class/updata`, data)
   },
@@ -49,8 +50,12 @@ export default {
   // 获取分类
   classGet () {
     return axios.get(`/ctn/class/get`)
-  }
+  },
 
+  // 拖拽换位
+  classExchange (data) {
+    return axios.put(`/ctn/class/exchange`, data)
+  }
   // -------------------------------------------------class-----------------------------------------------------
 
 }

@@ -43,7 +43,8 @@ module.exports = {
       '@router': path.resolve(__dirname, '../src/router'),
       '@store': path.resolve(__dirname, '../src/store'),
       '@excel': path.resolve(__dirname, '../src/excel'),
-      '@static': path.resolve(__dirname, '../static')
+      '@static': path.resolve(__dirname, '../static'),
+      '@myui': path.resolve(__dirname, '../src/MyUI')
 
       // '@excel': path.resolve(__dirname, '../src/excel'),
     }
