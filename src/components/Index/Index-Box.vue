@@ -1,9 +1,9 @@
 <template>
   <div id="ctnBox">
     <!-- 内容卡片 -->
-    <section :style="'height:'+height+'px;'">
+    <ExchangeBox :style="'height:'+height+'px;'">
       内容
-    </section>
+    </ExchangeBox>
 
     <!-- 分页 -->
     <footer class="page">
@@ -22,8 +22,12 @@
 </template>
 
 <script>
+import {ExchangeBox, ExchangeCard} from '@myui'
 export default {
-  components: {},
+  components: {
+    ExchangeBox,
+    ExchangeCard
+  },
   computed: {
     InnerSize () {
       return this.$store.getters.InnerSize

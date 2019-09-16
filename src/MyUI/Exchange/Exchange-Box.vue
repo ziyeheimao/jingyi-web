@@ -1,5 +1,8 @@
 <template>
-  <span>Exchange-Box</span>
+  <section>
+    <span>Exchange-Box</span>
+    <slot></slot>
+  </section>
 </template>
 
 <script>

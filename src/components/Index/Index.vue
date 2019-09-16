@@ -179,6 +179,7 @@ export default {
 
           setTimeout(() => {
             this.tabsData = [{ className: '全部', classId: 0 }, ...arr, { className: '+', classId: -1 }]
+            console.log(this.tabsData)
           }, 0)
         }
       })
