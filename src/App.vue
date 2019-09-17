@@ -41,6 +41,7 @@ export default {
       }, 300)
     },
 
+    // 文档可视区尺寸
     innerSizeCount () {
       let size = { // 内容区域尺寸
         width: window.innerWidth,

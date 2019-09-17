@@ -179,7 +179,7 @@ export default {
 
           setTimeout(() => {
             this.tabsData = [{ className: '全部', classId: 0 }, ...arr, { className: '+', classId: -1 }]
-            console.log(this.tabsData)
+            // console.log(this.tabsData)
           }, 0)
         }
       })
@@ -213,7 +213,7 @@ export default {
       clearTimeout(this.classExchangeTimer)
 
       this.classExchangeTimer = setTimeout(() => {
-        console.log('dragged碰撞检测', data.draged.classId, data.draged.sort, data.to.classId, data.to.sort)
+        // console.log('dragged碰撞检测', data.draged.classId, data.draged.sort, data.to.classId, data.to.sort)
         let req = {
           sort1: data.draged.sort,
           sort2: data.to.sort,

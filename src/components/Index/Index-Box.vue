@@ -2,7 +2,7 @@
   <div id="ctnBox">
     <!-- 内容卡片 -->
     <ExchangeBox :style="'height:'+height+'px;'">
-      内容
+      <ExchangeCard v-for="(v, k) in 12" :key="k" @click="open(v)"></ExchangeCard>
     </ExchangeBox>
 
     <!-- 分页 -->
@@ -50,6 +50,11 @@ export default {
     handleCurrentChange (val) {
       // this.page = val
       console.log(val)
+    },
+
+    // 卡片点击事件
+    open (cardId) {
+      console.log(cardId)
     }
   },
   created () {},
@@ -60,7 +65,7 @@ export default {
 
 <style scoped>
 *{
-  outline: 1px solid red;
+  /* outline: 1px solid red; */
 }
 #ctnBox{
   width: 100%;
