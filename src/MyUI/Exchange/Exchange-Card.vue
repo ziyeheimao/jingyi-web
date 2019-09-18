@@ -120,9 +120,9 @@ export default {
   align-items: center;
 }
 .Exchange-Card>.cardImg>img{
-  width: 75%;
-  height: 75%;
-  border: 1px solid #ddd;
+  width: 70%;
+  height: 70%;
+  /* border: 1px solid #ddd; */
   transition: transform 0.5s;
 }
 .Exchange-Card:hover{

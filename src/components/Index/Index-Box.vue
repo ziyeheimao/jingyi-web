@@ -2,7 +2,8 @@
   <div id="ctnBox">
     <!-- 内容卡片 -->
     <ExchangeBox :style="'height:'+height+'px;'">
-      <ExchangeCard v-for="(v, k) in 12" :key="k" @click="open(v)"></ExchangeCard>
+      <ExchangeCard v-for="(v, k) in cardList" :key="k" @click="open(v.webUrl)"
+       :title='v.webName' :iconUrl='v.webImgUrl' :ctnText='v.description'></ExchangeCard>
     </ExchangeBox>
 
     <!-- 分页 -->
@@ -11,11 +12,11 @@
         :small='true'
         :background='true'
         @current-change="handleCurrentChange"
-        :current-page.sync="currentPage3"
+        :current-page.sync="currentPage"
         :page-size="12"
         :pager-count="5"
         layout="prev, pager, next, jumper"
-        :total="1000">
+        :total="cardCount">
       </el-pagination>
     </footer>
   </div>
@@ -49,19 +50,21 @@ export default {
   },
   data () {
     return {
-      currentPage3: 5
+      currentPage: 1, // 当前页
+      cardList: [], // 卡片数据
+      cardCount: 1 // 卡片数量
     }
   },
   methods: {
     // 分页功能回调函数
     handleCurrentChange (val) {
-      // this.page = val
-      console.log(val)
+      this.currentPage = val
+      this.cardGet()
     },
 
     // 卡片点击事件
-    open (cardId) {
-      console.log(cardId)
+    open (url) {
+      window.open(url, '_blank')
     },
 
     // 获取卡片
@@ -69,11 +72,16 @@ export default {
       let req = {
         classId: this.ActiveClassId,
         userId: this.User.userId,
-        page: 1,
+        page: this.currentPage,
         limit: 12
       }
-      api.cardGet(req).then(res => {
-        console.log(res)
+      console.log(req)
+      api.cardGet(req).then(({data}) => {
+        console.log(data)
+        if (data.code === 0) {
+          this.cardCount = data.cardCount
+          this.cardList = data.data
+        }
       })
     }
   },
@@ -90,12 +98,8 @@ export default {
 </script>
 
 <style scoped>
-*{
-  /* outline: 1px solid red; */
-}
 #ctnBox{
   width: 100%;
-  /* height: 100%; */
 }
 footer.page{
   display: flex;

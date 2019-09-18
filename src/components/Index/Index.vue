@@ -1,5 +1,5 @@
 <template>
-  <div id="ctn" :style="'width:'+width+'px;height:'+height+'px;'">
+  <div id="ctn" :style="'width:' + width * 1 + 'px;height:' + height + 'px;'">
     <header>
       <!-- 小导航 -->
       <nav :style="'max-width:'+ulWidth+'px'">

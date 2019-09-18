@@ -19,12 +19,8 @@
         </section>
 
         <!-- 背景装饰 -->
-        <div class="rigthTop">
-          <img src="../../assets/inlet/Inlet2.png" alt="">
-        </div>
-        <div class="leftBottom">
-          <img src="../../assets/inlet/Inlet1.png" alt="">
-        </div>
+        <div class="rigthTop"></div>
+        <div class="leftBottom"></div>
       </el-main>
     </el-container>
 
@@ -77,19 +73,21 @@ export default {
 /* 背景装饰 */
 .rigthTop{
   width: 270px;
+  height: 150px;
   position: absolute;
   right: 0;
   top: 0;
+  background-image: url(../../assets/inlet/Inlet2.png);
+  background-size: 100% 100%;
 }
 .leftBottom{
   width: 240px;
+  height: 200px;
   position: absolute;
   left: 0;
   bottom: 0;
-}
-.rigthTop>img,
-.leftBottom>img{
-  width: 100%;
+  background-image: url(../../assets/inlet/Inlet1.png);
+  background-size: 100% 100%;
 }
 
 /* 内容 */
