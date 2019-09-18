@@ -30,8 +30,7 @@ export default {
     return axios.put(`/user/forgetPassword`, data)
   },
 
-  // -------------------------------------------------class-----------------------------------------------------
-
+  // -------------------------------------------------分类↓-----------------------------------------------------
   // 添加分类
   classAdd (data) {
     return axios.post(`/ctn/class/add`, data)
@@ -55,7 +54,35 @@ export default {
   // 拖拽换位
   classExchange (data) {
     return axios.put(`/ctn/class/exchange`, data)
+  },
+  // -------------------------------------------------分类↑-----------------------------------------------------
+
+  // -------------------------------------------------卡片↓-----------------------------------------------------
+  // 添加卡片
+  cardAdd (data) {
+    return axios.post(`/ctn/card/add`, data)
+  },
+
+  // 删除卡片
+  cardDel (cardId) {
+    return axios.delete(`/ctn/card/del?cardId=${cardId}`)
+  },
+
+  // 修改卡片
+  cardUpdata (data) {
+    return axios.put(`/ctn/card/updata`, data)
+  },
+
+  // 获取卡片
+  cardGet (data) {
+    return axios.get(`/ctn/card/get?userId=${data.userId}&classId=${data.classId}&page=${data.page}&limit=${data.limit}`)
+  },
+
+  // 拖拽换位
+  cardExchange (data) {
+    return axios.put(`/ctn/card/exchange`, data)
   }
-  // -------------------------------------------------class-----------------------------------------------------
+
+  // -------------------------------------------------卡片↑-----------------------------------------------------
 
 }

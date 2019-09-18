@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import api from '@api'
 import {ExchangeBox, ExchangeCard} from '@myui'
 export default {
   components: {
@@ -38,6 +39,12 @@ export default {
     height () {
       //                           大导航 上下边距 小导航 分页 边距
       return this.InnerSize.height - 60 - 40 - 20 - 40 - 26 - 20
+    },
+    User () {
+      return this.$store.getters.User
+    },
+    ActiveClassId () {
+      return this.$store.getters.ActiveClassId // 当前激活的卡片分类
     }
   },
   data () {
@@ -55,11 +62,30 @@ export default {
     // 卡片点击事件
     open (cardId) {
       console.log(cardId)
+    },
+
+    // 获取卡片
+    cardGet () {
+      let req = {
+        classId: this.ActiveClassId,
+        userId: this.User.userId,
+        page: 1,
+        limit: 12
+      }
+      api.cardGet(req).then(res => {
+        console.log(res)
+      })
     }
   },
-  created () {},
+  created () {
+    this.cardGet() // 获取卡片
+  },
   mounted () {},
-  watch: {}
+  watch: {
+    ActiveClassId () {
+      this.cardGet()
+    }
+  }
 }
 </script>
 

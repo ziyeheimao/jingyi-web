@@ -19,6 +19,9 @@ const mutations = {
   },
   SUser: (state, data) => {
     state.User = data
+  },
+  SActiveClassId: (state, data) => { // 当前激活的卡片分类
+    state.ActiveClassId = data
   }
 }
 

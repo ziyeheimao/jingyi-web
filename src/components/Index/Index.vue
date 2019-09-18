@@ -229,7 +229,11 @@ export default {
       // console.log('dragend拖拽结束时返回组(用于多组拖拽时判断哪一组)', data)
     })
   },
-  watch: {}
+  watch: {
+    classId () {
+      this.$store.commit('SActiveClassId', this.classId)
+    }
+  }
 }
 
 </script>

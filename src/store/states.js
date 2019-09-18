@@ -11,7 +11,7 @@ const state = {
   Mode: 0, // 页面模块显示
   Token: window.sessionStorage.getItem('token'), // token
   Refresh: true, // 刷新
-  User: JSON.parse(window.sessionStorage.getItem('user')) // 用户信息 // json字符串转对象
+  User: JSON.parse(window.sessionStorage.getItem('user')), // 用户信息 // json字符串转对象
   // User: { // 用户信息
   //   cache: '', // token时效
   //   cityCode: '', // 城市
@@ -30,6 +30,8 @@ const state = {
   //   userName: '', // 用户名
   //   userPicUrl: '' // 头像链接
   // }
+  ActiveClassId: 0 // 当前激活的卡片分类
+
 }
 
 export default state

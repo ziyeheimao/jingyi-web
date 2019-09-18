@@ -5,7 +5,7 @@ import FileSaver from '@static/js/FileSaver.js' // 文件转码
 const vue = new Vue()
 
 const serverUrl = 'http://127.0.0.1:666' // 服务器地址
-const defaultPic = 'http://127.0.0.1:666/userPic/defaultPic.png' // 默认头像
+const defaultPic = 'http://127.0.0.1:666/static/userPic/defaultPic.png' // 默认头像
 
 // 正则规则
 const reg = {
