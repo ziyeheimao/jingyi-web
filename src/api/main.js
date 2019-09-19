@@ -7,8 +7,47 @@ const vue = new Vue()
 const serverUrl = 'http://127.0.0.1:666' // 服务器地址
 const defaultPic = 'http://127.0.0.1:666/static/userPic/defaultPic.png' // 默认头像
 
+// 随机
+const random = {
+  // 取两个数之间随机数
+  num: function (min = 0, max = 100, len = 0) {
+    return Number((min + (max - min) * Math.random()).toFixed(len))
+  },
+
+  // 任意长度 随机字符串
+  str: function (len = 8) {
+    let str = ''
+    let list = '0123456789abcdefghijklmnopqrstuvwxyz'
+    for (let i = 0; i < len; i++) {
+      let index = this.num(0, 35)
+      let word = list[index]
+      if (isNaN(word) && this.num() < 50) {
+        word = word.toUpperCase()
+      }
+      str += word
+    }
+    return str
+  },
+
+  // 随机字母
+  letter: function (len = 8) {
+    let str = ''
+    let list = 'abcdefghijklmnopqrstuvwxyz'
+    for (let i = 0; i < len; i++) {
+      let index = this.num(0, 26)
+      let word = list[index]
+      if (isNaN(word) && this.num() < 50) {
+        word = word.toUpperCase()
+      }
+      str += word
+    }
+    return str
+  }
+}
+
 // 正则规则
 const reg = {
+  url: /[a-zA-z]+:\/\/[^\s]*/, // 网址及url
   // eslint-disable-next-line
   email: /^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/,
   phone: /^1([3-9][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/
@@ -315,6 +354,7 @@ const mslineCtn = function (attr, label, ctnData) {
 export default {
   serverUrl,
   defaultPic,
+  random,
   bubbleSort,
   reg,
   trim,
