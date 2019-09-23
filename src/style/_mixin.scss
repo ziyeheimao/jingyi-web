@@ -1,0 +1,45 @@
+// 混合器
+
+// 两端对齐
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+// 两端对齐允许换行
+@mixin flex-between-wrap {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+@mixin flex-around-wrap {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+// 弹性 + x轴y轴居中
+@mixin flex-center-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// 单行文本溢出省略
+@mixin overflow-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// 分页样式(父元素容器)
+@mixin page {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 0 0;
+}
+
+@mixin basic-animation{
+  transition: all 0.5s linear;
+}

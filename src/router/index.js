@@ -6,8 +6,8 @@ import Router from 'vue-router'
 // 路由懒加载
 // 测试
 const Test = resolve => {
-  require.ensure(['@components/Test.vue'], () => {
-    resolve(require('@components/Test.vue'))
+  require.ensure(['@components/Test/Test.vue'], () => {
+    resolve(require('@components/Test/Test.vue'))
   })
 }
 // 入口(登陆、注册、改密码)

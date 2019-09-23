@@ -100,7 +100,6 @@ export default {
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 5px;
-  /* overflow: hidden; */
   box-shadow: 2px 2px 5px #00000020;
   display: flex;
   align-items: center;
@@ -110,7 +109,6 @@ export default {
 }
 .Exchange-Card>div{
   display: inline-block;
-  /* outline: 1px solid red; */
 }
 
 /* LOGO图片 */
@@ -122,8 +120,7 @@ export default {
 .Exchange-Card>.cardImg>img{
   width: 70%;
   height: 70%;
-  /* border: 1px solid #ddd; */
-  transition: transform 0.5s;
+  transition: transform 0.5s linear;
 }
 .Exchange-Card:hover{
   box-shadow: 4px 4px 6px #00000040;
@@ -159,7 +156,6 @@ export default {
 .Exchange-Card>div.ctn>p{
   text-indent: 2rem;
   font-family: huakang-shaonv;
-  /* outline: 1px solid red; */
   line-height: 1.4rem;
 
   /* 如果文本溢出显示... */

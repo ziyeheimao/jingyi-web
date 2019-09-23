@@ -44,7 +44,8 @@ module.exports = {
       '@store': path.resolve(__dirname, '../src/store'),
       '@excel': path.resolve(__dirname, '../src/excel'),
       '@static': path.resolve(__dirname, '../static'),
-      '@myui': path.resolve(__dirname, '../src/MyUI')
+      '@myui': path.resolve(__dirname, '../src/MyUI'),
+      '@style': path.resolve(__dirname, '../src/style')
 
       // '@excel': path.resolve(__dirname, '../src/excel'),
     }
@@ -52,6 +53,10 @@ module.exports = {
   module: {
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
+      {
+        test: /\.scss$/,
+        loaders: ['style', 'css', 'sass'] // scss格式处理
+      },
       {
         test: /\.vue$/,
         loader: 'vue-loader',

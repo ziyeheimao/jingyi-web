@@ -206,6 +206,7 @@ export default {
               data.data.push(obj) // 向不足一组卡片的数组中添加 <添加标签> 直到补满一组
             }
             this.cardList = data.data
+            console.log(data.data)
           }
         }
       })
