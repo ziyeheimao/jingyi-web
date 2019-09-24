@@ -1,17 +1,17 @@
 <template>
   <div class="d1">
-    测试页面
+    <Menu :list='list'></Menu>
   </div>
 </template>
 
 <script>
 // import api from '@api'
 // import main from '@main'
-// import { ExchangeBox, ExchangeCard } from '@myui'
+import { Menu, ExchangeBox, ExchangeCard } from '@myui'
 
 export default {
   components: {
-    // ExchangeBox, ExchangeCard
+    ExchangeBox, ExchangeCard, Menu
   },
   // props: [''],
   computed: {
@@ -19,7 +19,12 @@ export default {
   },
   data () {
     return {
-
+      list: [
+        {ctn: '修 改', index: 1, color: ''},
+        {ctn: '删 除', index: 2, color: ''},
+        {ctn: '添加到', index: 3, color: ''},
+        {ctn: '移动到', index: 4, color: ''}
+      ]
     }
   },
   methods: {

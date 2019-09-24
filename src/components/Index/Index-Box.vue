@@ -2,7 +2,7 @@
   <div id="ctnBox">
     <!-- 内容卡片 -->
     <ExchangeBox :style="'height:'+height+'px;'">
-      <ExchangeCard v-for="(v, k) in cardList" :key="k" @click="open(v.webUrl)"
+      <ExchangeCard v-for="(v, k) in cardList" :key="k" @click="open(v.webUrl, v.index)"
        :title='v.webName' :iconUrl='v.webImgUrl' :ctnText='v.description'></ExchangeCard>
     </ExchangeBox>
 
@@ -60,21 +60,14 @@
 
           :before-upload="beforeAvatarUpload"
           :on-success='handleSuccess'
-          :on-error='handleError'
-          >
+          :on-error='handleError'>
+
           <span>+</span>
-          <!-- <i slot="default" class="el-icon-plus"></i> -->
 
           <div slot="file" slot-scope="{file}">
             <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
 
             <span class="el-upload-list__item-actions">
-              <!-- <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
-                <i class="el-icon-zoom-in"></i>
-              </span>
-              <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleDownload(file)">
-                <i class="el-icon-download"></i>
-              </span> -->
               <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
                 <i class="el-icon-delete"></i>
               </span>
@@ -142,6 +135,7 @@ export default {
       api: {},
       // 上传 ↑
 
+      index: '', // 当前点击的<添加>标号
       dialogVisibleAdd: false, // 添加新标签模态框
       currentPage: 1, // 当前页
       cardList: [], // 卡片数据
@@ -154,7 +148,8 @@ export default {
         webId: 0,
         webImgUrl: '../../../static/img/xxx.png',
         webName: '添加新标签',
-        webUrl: ''
+        webUrl: '',
+        index: '' // 前端判断哪个位置在爬取时图标变化
       },
 
       form: {
@@ -169,7 +164,9 @@ export default {
       rules: {
         webName: [],
         description: [],
-        webImgUrl: [],
+        webImgUrl: [
+          { pattern: /[a-zA-z]+:\/\/[^\s]*/, message: '请输入正确的域名' }
+        ],
         webUrl: [
           { required: true, message: '域名不可为空', trigger: 'blur' },
           { pattern: /[a-zA-z]+:\/\/[^\s]*/, message: '请输入正确的域名' }
@@ -202,11 +199,11 @@ export default {
               let index = main.random.num(1, 12) + ''
               let obj = main.clone(this.addCard)
               obj.webImgUrl = `../../../static/img/${index}.png`
-
+              obj.index = i
               data.data.push(obj) // 向不足一组卡片的数组中添加 <添加标签> 直到补满一组
             }
             this.cardList = data.data
-            console.log(data.data)
+            console.log(this.cardList)
           }
         }
       })
@@ -219,7 +216,8 @@ export default {
     },
 
     // 卡片点击事件
-    open (url) {
+    open (url, index) {
+      this.index = index
       if (url === '') {
         this.dialogVisibleAdd = true
       } else {
@@ -228,6 +226,15 @@ export default {
     },
 
     sbumit (form) {
+      // 点击的 <添加> 标签进入 <加载> 状态
+      for (let i of this.cardList) {
+        if (i.index === this.index) {
+          i.webImgUrl = '../../../static/img/load.gif'
+          i.webName = '加载中'
+          i.description = '数据爬取中...'
+        }
+      }
+
       switch (this.RadioLogo) {
         case 2: // 以上传文件附带参数形式发请求
           this.$refs.upload.submit() // 上传图片
@@ -239,14 +246,17 @@ export default {
           break
       }
     },
+    // 添加卡片json
     add (form) {
       this.$refs[form].validate(valid => {
         if (valid) {
           let data = main.clone(this.form)
           data.classId = this.ActiveClassId
-          console.log('添加卡片req', data)
           api.cardAdd(data).then(({data}) => {
-            console.log('添加卡片res', data)
+            let res = main.msg(data.code, data.msg)
+            if (res) {
+              this.cardGet() // 重新获取当前页卡片
+            }
           })
           this.dialogVisibleAdd = false
         }
@@ -255,20 +265,53 @@ export default {
 
     // 移除选中图片
     handleRemove (file) {
-      console.log(file, this.fileList)
-      console.log(this.fileList)
+      // console.log(file, this.fileList)
+      this.fileList = []
     },
-    /*
-    handlePictureCardPreview (file) {
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
+
+    // 上传之前
+    beforeAvatarUpload (file) {
+      this.form.classId = this.ActiveClassId
+      console.log('上传之前', this.form)
+      const webUrl = this.form.webUrl
+      const type = file.type.indexOf('image') !== -1
+      const size = file.size / 1024 / 1024 < 1
+
+      if (!webUrl) {
+        this.$message.error('域名是必填项!')
+      }
+      if (!type) {
+        this.$message.error('上传的文件只能是图片格式!')
+      }
+      if (!size) {
+        this.$message.error('文件大小不能超过1MB!')
+      }
+
+      let res = type && size && webUrl
+      if (res) {
+        this.dialogVisibleAdd = false
+      }
+
+      return type && size && webUrl
     },
-    handleDownload (file) {
-      console.log(file)
-    }, */
-    beforeAvatarUpload () {},
-    handleSuccess () {},
-    handleError () {}
+
+    // 上传成功钩子
+    handleSuccess (response, file, fileList) {
+      console.log('上传成功', response)
+      main.msg(response.code, response.msg) // 提示信息
+
+      setTimeout(() => {
+        this.cardGet() // 重新获取当前页卡片
+      }, 1000)
+    },
+    // 上传失败钩子
+    handleError (err, file, fileList) {
+      console.log('上传失败', err, file, fileList)
+
+      setTimeout(() => {
+        this.cardGet() // 重新获取当前页卡片
+      }, 1000)
+    }
   },
   created () {
     this.cardGet() // 获取卡片
@@ -297,10 +340,4 @@ footer.page{
 #ctnBox .el-dialog .el-form .el-radio-group{
   margin: 20px 0 10px 5px;
 }
-/* #ctnBox .upload > div,
-#ctnBox .upload > ul > li{
-  width: 70px !important;
-  height: 70px !important;
-  line-height: 70px !important;
-} */
 </style>

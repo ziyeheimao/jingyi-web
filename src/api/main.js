@@ -176,6 +176,16 @@ const openErrorInfo = function (msg) {
     type: 'error'
   })
 }
+// 传入返回的data 根据状态码调用提示框
+const msg = function (code, msg) {
+  if (code === 0) {
+    openSuccessInfo(msg)
+    return true
+  } else {
+    openErrorInfo(msg)
+    return false
+  }
+}
 // 右侧弹窗不会自动关闭
 // 成功
 const notifySuccess = function (msg, title = '成功') {
@@ -368,6 +378,7 @@ export default {
   openSuccessInfo,
   openWarningInfo,
   openErrorInfo,
+  msg,
   notifySuccess,
   notifyWarning,
   notifyInfo,

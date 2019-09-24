@@ -78,7 +78,7 @@ export default {
 
   // 获取卡片
   cardGet (data) {
-    return axios.get(`/ctn/card/get?userId=${data.userId}&classId=${data.classId}&page=${data.page}&limit=${data.limit}`)
+    return axios.get(`/ctn/card/get?classId=${data.classId}&page=${data.page}&limit=${data.limit}`)
   },
 
   // 拖拽换位
