@@ -3,7 +3,8 @@
     <!-- 内容卡片 -->
     <ExchangeBox :style="'height:'+height+'px;'">
       <ExchangeCard v-for="(v, k) in cardList" :key="k" @click="open(v.webUrl, v.index)"
-       :title='v.webName' :iconUrl='v.webImgUrl' :ctnText='v.description'></ExchangeCard>
+       :title='v.webName' :iconUrl='v.webImgUrl' :ctnText='v.description'
+       @contextmenu.prevent.native="isShow($event)"></ExchangeCard>
     </ExchangeBox>
 
     <!-- 分页 -->
@@ -13,7 +14,7 @@
         :background='true'
         @current-change="handleCurrentChange"
         :current-page.sync="currentPage"
-        :page-size="12"
+        :page-size="cardNumber"
         :pager-count="5"
         layout="prev, pager, next, jumper"
         :total="cardCount">
@@ -88,6 +89,9 @@
       </span>
     </el-dialog>
 
+    <!-- 卡片右键菜单 -->
+    <Menu :list='MenuList' :show='MenuShow' :listStyle='MenuListStyle' :position='MenuPosition' @click="clickMenu" ></Menu>
+
   </div>
 </template>
 
@@ -95,12 +99,13 @@
 import api from '@api'
 import main from '@main'
 
-import {ExchangeBox, ExchangeCard} from '@myui'
+import {ExchangeBox, ExchangeCard, Menu} from '@myui'
 
 export default {
   components: {
     ExchangeBox,
-    ExchangeCard
+    ExchangeCard,
+    Menu
   },
   computed: {
     InnerSize () {
@@ -116,8 +121,16 @@ export default {
     ActiveClassId () {
       return this.$store.getters.ActiveClassId // 当前激活的卡片分类
     },
+    cardNum () {
+      let cardNum = window.localStorage.getItem('cardNum') // 卡片行数列数
+      if (cardNum) {
+        return JSON.parse(cardNum)
+      } else {
+        return { row: 4, col: 3 }
+      }
+    },
     cardNumber () {
-      return 4 * 3 // 卡片数量 = 行 * 列
+      return this.cardNum.row * this.cardNum.col // 卡片数量 = 行 * 列
     }
   },
   data () {
@@ -171,10 +184,28 @@ export default {
           { required: true, message: '域名不可为空', trigger: 'blur' },
           { pattern: /[a-zA-z]+:\/\/[^\s]*/, message: '请输入正确的域名' }
         ]
-      }
+      },
+
+      // 菜单------------------------------------------------------------------------------------------------
+      MenuShow: false,
+      MenuListStyle: '',
+      MenuPosition: {},
+      MenuList: [
+        { label: '修 改', value: 1, style: '' },
+        { label: '删 除', value: 2, style: '' },
+        { label: '添加到', value: 3, style: '' }, // , children: [] },
+        { label: '移动到', value: 4, style: '' } // , children: [] }
+      ]
     }
   },
   methods: {
+    // 分页功能回调函数
+    handleCurrentChange (val) {
+      this.currentPage = val
+      this.cardGet()
+    },
+
+    // 卡片 -----------------------------------------------------------------------------------------------
     // 获取卡片
     cardGet () {
       let req = {
@@ -207,12 +238,6 @@ export default {
           }
         }
       })
-    },
-
-    // 分页功能回调函数
-    handleCurrentChange (val) {
-      this.currentPage = val
-      this.cardGet()
     },
 
     // 卡片点击事件
@@ -263,6 +288,7 @@ export default {
       })
     },
 
+    // 上传图片 --------------------------------------------------------------------------------------------
     // 移除选中图片
     handleRemove (file) {
       // console.log(file, this.fileList)
@@ -311,6 +337,23 @@ export default {
       setTimeout(() => {
         this.cardGet() // 重新获取当前页卡片
       }, 1000)
+    },
+
+    // 卡片右键菜单 ---------------------------------------------------------------------------------------
+    isShow (e) {
+      this.MenuPosition = {
+        x: e.clientX,
+        y: e.clientY
+      }
+      console.log(this.MenuPosition)
+      this.MenuShow = false
+      setTimeout(() => {
+        this.MenuShow = true
+      }, 0)
+    },
+    // 菜单内容点击事件
+    clickMenu (value1) {
+      console.log('外层', value1)
     }
   },
   created () {

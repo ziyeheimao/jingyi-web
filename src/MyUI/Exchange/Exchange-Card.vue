@@ -1,13 +1,17 @@
 <template>
-  <div class="Exchange-Card Card" ref="card" @click='click'>
+  <div class="Exchange-Card Card" ref="card" @click='click'
+   :style="`width: calc((100% - (20px * ${cardNum.col-1})) / ${cardNum.col});
+   height: calc((100% - (20px * ${cardNum.row-1}) - 20px) / ${cardNum.row});`">
     <div class="cardImg" ref="cardImg">
       <img :src="iconUrl" alt="LOGO">
     </div>
 
     <div class="ctn" ref="ctn">
       <h4>{{title}}</h4>
-      <p>{{ctnText}}<!-- <slot></slot> --></p>
+      <p>{{ctnText}}</p>
     </div>
+
+    <!-- <slot></slot> -->
     <!-- <slot name="my-header">头部默认值</slot>
     <slot name="my-body">主体默认值</slot>
     <slot name="my-footer">尾部默认值</slot> -->
@@ -19,9 +23,6 @@
 </template>
 
 <script>
-// import api from '@api'
-// import main from '@main'
-
 export default {
   components: {
     // x
@@ -29,23 +30,19 @@ export default {
   props: {
     title: {type: String, default: '标题要长yaochang 1234567890'},
     iconUrl: {type: String, default: '../../../assets/userPic.png'},
-    ctnText: {type: String, default: '在线计算器是一个虚拟的网页计算器，基础版的网页计算器，为用户提供加、减、乘、除等基本的数学计算，还可以暂存计算结果，在需在线计算器要时通过“取存”键调出来再与其他计算结果进行运算。除了基础版外，还提供高级版的计算器，加入了圆周率、正弦、余弦、正切、对数等计算功能，力求满足广大网友的需要。'}
-    // type: { type: String, default: 'default' },
-    // long: Boolean,
-    // loading: { type: Boolean, default: false },
-    // noRadius: { ype: Boolean, default: false },
-    // bgColor: { type: String, default: '' },
-    // borderColor: { type: String, default: '' },
-    // icon: { type: String, default: '' },
-    // color: { type: String, default: '' },
-    // block: Boolean,
-    // disabled: Boolean,
-    // plain: Boolean,
-    // round: Boolean
+    ctnText: {type: String, default: '这是内容这是内容..........这是内容这是内容..........这是内容这是内容..........这是内容这是内容..........这是内容这是内容..........这是内容这是内容..........'}
   },
   computed: {
     InnerSize () {
       return this.$store.getters.InnerSize
+    },
+    cardNum () {
+      let cardNum = window.localStorage.getItem('cardNum')
+      if (cardNum) {
+        return JSON.parse(cardNum)
+      } else {
+        return { row: 4, col: 3 }
+      }
     }
   },
   data () {

@@ -1,6 +1,11 @@
 <template>
   <div class="d1">
-    <Menu :list='list'></Menu>
+    <Menu :list='list' :show='show' :listStyle='listStyle' :position='position' @click="clickMenu" ></Menu>
+
+    <div @contextmenu.prevent="isShow($event)">右键菜单</div>
+    <div @contextmenu.prevent="isShow($event)">右键菜单</div>
+    <div @contextmenu.prevent="isShow($event)">右键菜单</div>
+
   </div>
 </template>
 
@@ -19,23 +24,36 @@ export default {
   },
   data () {
     return {
+      show: false,
+      listStyle: '',
+      position: {},
       list: [
-        {ctn: '修 改', index: 1, color: ''},
-        {ctn: '删 除', index: 2, color: ''},
-        {ctn: '添加到', index: 3, color: ''},
-        {ctn: '移动到', index: 4, color: ''}
+        { label: '修 改', value: 1, style: '' },
+        { label: '删 除', value: 2, style: '' },
+        { label: '添加到', value: 3, style: '' }, // , children: [] },
+        { label: '移动到', value: 4, style: '' } // , children: [] }
       ]
     }
   },
   methods: {
-
+    isShow (e) {
+      this.position = {
+        x: e.clientX,
+        y: e.clientY
+      }
+      this.show = false
+      setTimeout(() => {
+        this.show = true
+      }, 0)
+    },
+    clickMenu (value1) {
+      console.log('外层', value1)
+    }
   },
   beforeCreate () {},
   created () {},
   beforeMount () {},
-  mounted () {
-
-  },
+  mounted () {},
   beforeUpdate () {},
   updated () {},
   beforeDestroy () {},
@@ -46,7 +64,7 @@ export default {
 
 <style lang="scss" scoped>
 @import '@style/index.scss';
-.d1{
-  // color: $lightBlue;
+div{
+  padding: 15px;
 }
 </style>

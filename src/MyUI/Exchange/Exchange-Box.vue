@@ -5,37 +5,49 @@
 </template>
 
 <script>
-// import api from '@api'
-// import main from '@main'
 
 export default {
   components: {
     // x
   },
   props: {
-    // type: { type: String, default: 'default' },
-    // long: Boolean,
-    // loading: { type: Boolean, default: false },
-    // noRadius: { ype: Boolean, default: false },
-    // bgColor: { type: String, default: '' },
-    // borderColor: { type: String, default: '' },
-    // icon: { type: String, default: '' },
-    // color: { type: String, default: '' },
-    // block: Boolean,
-    // disabled: Boolean,
-    // plain: Boolean,
-    // round: Boolean
+    row: { type: Number, defalut: 4 }, // 行数
+    col: { type: Number, defalut: 3 } // 列数
   },
-  computed: {
-
-  },
+  computed: {},
   data () {
     return {}
   },
   methods: {
+    init () {
+      let data = {}
+      let _cardNum = window.localStorage.getItem('cardNum')
+      if (_cardNum) {
+        _cardNum = JSON.parse(_cardNum)
+
+        if (_cardNum.row && _cardNum.col) {
+          data = { row: _cardNum.row, col: _cardNum.col } // 缓存的数据
+        }
+
+        if (this.row && this.col) {
+          data = { row: this.row, col: this.col } // 传参的数据 优先级大于缓存数据
+        }
+      } else { // 没有缓存时
+        if (this.row && this.col) { // 有传参 使用传参
+          data = { row: this.row, col: this.col } // 传参的数据
+        } else { // 啥也没有
+          data = { row: 4, col: 3 }
+        }
+      }
+
+      let cardNum = JSON.stringify(data)
+      window.localStorage.setItem('cardNum', cardNum)
+    }
   },
   beforeCreate () {},
-  created () {},
+  created () {
+    this.init()
+  },
   beforeMount () {},
   mounted () {
   },
@@ -47,15 +59,10 @@ export default {
 }
 </script>
 
-<style scoped>
-.Exchange-Box{
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
+<style lang='scss' scoped>
+@import '@style/index.scss';
 
-.Exchange-Box>div.Exchange-Card{
-  width: calc((100% - (20px * 2)) / 3);
-  height: calc((100% - (20px * 3) - 20px) / 4);
+.Exchange-Box{
+  @include flex-between-wrap;
 }
 </style>
