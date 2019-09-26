@@ -11,6 +11,9 @@ export default {
   ARefresh: (context, data) => {
     context.commit('SRefresh', data)
   },
+  AClass: (context, data) => {
+    context.commit('SClass', data) // 当前用户的所有卡片分类
+  },
   AUser: (context, data) => {
     context.commit('SUser', data)
   }

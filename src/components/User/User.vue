@@ -3,11 +3,14 @@
     <span>这是用户设置 /user 页面</span>
 
     <div>
-      卡片行数:<el-input-number size="mini" v-model="form.row" :min="3" :max="9" @change="rowChange"></el-input-number>
+      卡片行数:<el-input-number size="mini" v-model="form.row" :min="3" :max="9"></el-input-number>
+      <el-slider v-model="form.row" :min='3' :max='9' show-input vertical height="400px"></el-slider>
+      <!-- :show-input-controls='false' -->
     </div>
 
     <div>
-      卡片列数:<el-input-number size="mini" v-model="form.col" :min="3" :max="9" @change="colChange"></el-input-number>
+      卡片列数:<el-input-number size="mini" v-model="form.col" :min="3" :max="9"></el-input-number>
+      <el-slider v-model="form.col" :min='3' :max='9' show-input></el-slider>
     </div>
   </div>
 </template>
@@ -49,15 +52,6 @@ export default {
         }
       }
     },
-
-    // 行变化
-    colChange () {
-      this.storage()
-    },
-    // 列变化
-    rowChange () {
-      this.storage()
-    },
     // 存
     storage () {
       let data = { row: this.form.row, col: this.form.col }
@@ -75,7 +69,14 @@ export default {
   updated () {},
   beforeDestroy () {},
   deactivated () {},
-  watch: {}
+  watch: {
+    'form.row' () {
+      this.storage()
+    },
+    'form.col' () {
+      this.storage()
+    }
+  }
 
 }
 </script>

@@ -16,6 +16,9 @@ const getters = {
   User: (state) => { // 用户信息
     return state.User
   },
+  Class: (state) => {
+    return state.Class // 当前用户的所有卡片分类
+  },
   ActiveClassId: (state) => { // 当前激活的卡片分类
     return state.ActiveClassId
   }

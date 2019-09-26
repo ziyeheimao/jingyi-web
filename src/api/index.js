@@ -51,7 +51,7 @@ export default {
     return axios.get(`/ctn/class/get`)
   },
 
-  // 拖拽换位
+  // 分类拖拽排序
   classExchange (data) {
     return axios.put(`/ctn/class/exchange`, data)
   },
@@ -67,8 +67,8 @@ export default {
   cardUpload: '/ctn/card/upload',
 
   // 删除卡片
-  cardDel (cardId) {
-    return axios.delete(`/ctn/card/del?cardId=${cardId}`)
+  cardDel (webId) {
+    return axios.delete(`/ctn/card/del?webId=${webId}`)
   },
 
   // 修改卡片
@@ -81,11 +81,25 @@ export default {
     return axios.get(`/ctn/card/get?classId=${data.classId}&page=${data.page}&limit=${data.limit}`)
   },
 
-  // 拖拽换位
+  // 卡片拖拽换位
   cardExchange (data) {
     return axios.put(`/ctn/card/exchange`, data)
-  }
+  },
 
+  // 卡片移动到某分类
+  cardToClass (data) {
+    return axios.put('ctn/card/toClass', data)
+  },
+
+  // 卡片添加到某分类
+  cardAddClass (data) {
+    return axios.put('ctn/card/addClass', data)
+  },
+
+  // 删除卡片的某个分类
+  cardDelClass (data) {
+    return axios.delete(`/ctn/card/delClass?webId=${data.webId}&classId=${data.classId}`)
+  }
   // -------------------------------------------------卡片↑-----------------------------------------------------
 
 }

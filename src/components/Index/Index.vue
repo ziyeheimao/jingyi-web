@@ -167,12 +167,13 @@ export default {
     },
 
     // 获取分类
-    get () {
+    getClass () {
       api.classGet().then(({data}) => {
         if (data.code === 0) {
           // 按sort的属性值 排序
           let arr = main.bubbleSort(data.result, 'sort')
 
+          this.$store.dispatch('AClass', arr)
           // 貌似CPU 多线程处理导致的BUG ↓ 使用异步函数包裹处理
           setTimeout(() => {
             this.tabsData = []
@@ -190,7 +191,7 @@ export default {
     exchange (req) {
       api.classExchange(req).then(res => {
         if (res.data.code === 0) {
-          this.get()
+          this.getClass()
         }
       })
     },
@@ -199,14 +200,14 @@ export default {
     _info (res) {
       if (res.data.code === 0) {
         main.openSuccessInfo(res.data.msg)
-        this.get() // 更新数据
+        this.getClass() // 更新数据
       } else {
         main.openErrorInfo(res.data.msg)
       }
     }
   },
   created () {
-    this.get()
+    this.getClass()
   },
   mounted () {
     // 碰撞检测

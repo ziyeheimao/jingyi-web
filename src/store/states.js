@@ -30,6 +30,7 @@ const state = {
   //   userName: '', // 用户名
   //   userPicUrl: '' // 头像链接
   // }
+  Class: {}, // 当前用户的所有卡片分类
   ActiveClassId: 0 // 当前激活的卡片分类
 
 }

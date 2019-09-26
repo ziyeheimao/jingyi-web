@@ -12,7 +12,6 @@
 
     <ul class="hotWords" id="hotWords" :style="'width:'+hotWordsWidth+'px;'+show"
       @mouseenter='mouseenter' @mouseleave='mouseleave'>
-      <!-- mouseenter：当鼠标移入某元素时触发 --><!-- mouseleave：当鼠标移出某元素时触发 -->
       <li v-for="(v, k) in res.hotWords" :key="k" @click="clickLi(v)" :class="k === activateIndex ? 'activate' : ''">
         <span :style="'max-width:'+(hotWordsWidth-35)+'px'">{{v}}</span>
         <i class="el-icon-close" v-show="mode" @click.stop="del(v)"></i>

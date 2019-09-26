@@ -2,12 +2,19 @@
   <ul class="setUp" :style="'display:'+show2 +
     'position:fixed;'+'left:'+position.x +'px;top:'+position.y + 'px;' +
     listStyle" @mouseleave='mouseleave'>
-    <li v-for="(v, k) in list" :key="k" :style="v.style" @click="click(v.value)">
+    <li v-for="(v, k) in list" :key="k"
+      :style="(v.style !== false ? v.style : '') + (v.disabled === true ? `background-color: #efefef; color: #bbb; cursor: not-allowed;` : ``)"
+      @click="click(v.value)"
+      @mousedown="mousedown(v.disabled)">
+
       {{v.label}}
       <i v-if="v.children" class="el-icon-arrow-right"></i>
 
       <ul v-if="v.children" class="setUp2" :style='listStyle'>
-        <li v-for="(v2, k2) in v.children" :key="k2" :style="v.style" @click.stop="click(`${v.value}-${v2.value}`)">{{v2.label}}</li>
+        <li v-for="(v2, k2) in v.children" :key="k2"
+        :style="(v2.style !== false ? v.style : '') + (v.disabled === true ? `background-color: #efefef; color: #bbb; cursor: not-allowed;` : ``)"
+        @click.stop="click(`${v.value}-${v2.value}`)"
+        @mousedown="mousedown(v2.disabled)">{{v2.label}}</li>
       </ul>
     </li>
   </ul>
@@ -40,7 +47,8 @@ export default {
   },
   data () {
     return {
-      show2: 'none;'
+      show2: 'none;',
+      disabled: ''
     }
   },
   methods: {
@@ -48,8 +56,15 @@ export default {
     mouseleave () {
       this.show2 = 'none;'
     },
+    mousedown (disabled) {
+      this.disabled = disabled
+    },
     click (event, value1) {
-      return this.$emit('click', event)
+      console.log('内层函数', this.disabled)
+      if (!this.disabled) {
+        return this.$emit('click', event)
+      }
+      // return this.$emit('click', event)
     }
   },
   beforeCreate () {},
