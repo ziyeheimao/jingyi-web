@@ -12,9 +12,9 @@
 
       <ul v-if="v.children" class="setUp2" :style='listStyle'>
         <li v-for="(v2, k2) in v.children" :key="k2"
-        :style="(v2.style !== false ? v.style : '') + (v.disabled === true ? `background-color: #efefef; color: #bbb; cursor: not-allowed;` : ``)"
-        @click.stop="click(`${v.value}-${v2.value}`)"
-        @mousedown="mousedown(v2.disabled)">{{v2.label}}</li>
+          :style="(v2.style !== false ? v.style : '') + (v.disabled === true ? `background-color: #efefef; color: #bbb; cursor: not-allowed;` : ``)"
+          @click.stop="click(`${v.value}-${v2.value}`)"
+          @mousedown="mousedown(v2.disabled)">{{v2.label}}</li>
       </ul>
     </li>
   </ul>
@@ -60,11 +60,9 @@ export default {
       this.disabled = disabled
     },
     click (event, value1) {
-      console.log('内层函数', this.disabled)
       if (!this.disabled) {
         return this.$emit('click', event)
       }
-      // return this.$emit('click', event)
     }
   },
   beforeCreate () {},

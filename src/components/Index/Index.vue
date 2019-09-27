@@ -50,6 +50,9 @@ export default {
     },
     ulWidth () {
       return this.width - 40 - 352 - 20
+    },
+    ActiveClassId () {
+      return this.$store.getters.ActiveClassId
     }
   },
   data () {
@@ -208,6 +211,7 @@ export default {
   },
   created () {
     this.getClass()
+    this.activeLi = this.ActiveClassId
   },
   mounted () {
     // 碰撞检测
@@ -215,7 +219,6 @@ export default {
       clearTimeout(this.classExchangeTimer)
 
       this.classExchangeTimer = setTimeout(() => {
-        // console.log('dragged碰撞检测', data.draged.classId, data.draged.sort, data.to.classId, data.to.sort)
         let req = {
           sort1: data.draged.sort,
           sort2: data.to.sort,

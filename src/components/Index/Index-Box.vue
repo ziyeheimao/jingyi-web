@@ -334,11 +334,19 @@ export default {
     },
     // 卡片添加到某分类
     cardAddClass (classId) {
-      console.log(this.MenuForm.webId, '添加到', classId)
+      let data = {webId: this.MenuForm.webId, classId}
+      api.cardAddClass(data).then(({data}) => {
+        main.msg(data.code, data.msg)
+      })
     },
     // 卡片移动到某分类
     cardToClass (classId) {
-      console.log(this.MenuForm.webId, '移动到', classId)
+      let data = {webId: this.MenuForm.webId, toClassId: classId, fromClassId: this.ActiveClassId}
+      api.cardToClass(data).then(({data}) => {
+        if (main.msg(data.code, data.msg)) {
+          this.cardGet()
+        }
+      })
     },
 
     // 上传图片 ↓ --------------------------------------------------------------------------------------------
@@ -427,7 +435,6 @@ export default {
       value = value + ''
       let arr = value.split('-')
 
-      console.log(arr)
       switch (arr[0]) {
         case '1': // 修改
           this.dialogType = 'updata' // 模态框状态 修改模式
@@ -435,7 +442,6 @@ export default {
           this.cardDialogVisible = true
           break
         case '2': // 删除
-          console.log('删除分流', this.ActiveClassId)
           if (this.ActiveClassId === 0) { // <全部> 下的卡片
             this.cardDel()
           } else { // 某 <分类> 下的卡片

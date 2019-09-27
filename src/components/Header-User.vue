@@ -84,6 +84,7 @@ export default {
 #user > span.userName{
   color: #67c23a;
   font-size: 1.3rem;
+  font-family: huakang-shaonv;
   cursor: pointer;
 
   margin-left: 10px;
