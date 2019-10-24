@@ -1,0 +1,14 @@
+// 变量声明
+
+$red:red; // 首页考试列表激活颜色 各处高亮提示信息
+$gray: #606266; // 首页考试选择 用户页面 .title
+$lightBlue: rgb(0, 173, 239); // 帮助模块list左侧圆点 & 客服模块蓝色浅5% (原平台浅蓝)
+$lightGray: rgb(191, 191, 191); // 浅灰帮助模块list左边框
+$backgrundColor: rgb(84, 92, 100); // 页尾背景色 (导航栏手风琴 页头页尾等主色调)
+$backgrundColorActivate: rgb(67, 74, 80);
+$white: #fff; // 页尾文字颜色 客服标题 手风琴缩起按钮
+$textClol: #3d3b39; // 客服小字 帮助小字
+$black: #333; // 客服标题 帮助标题
+$shadow: 0 0 10px #00000030; // 客服 阴影
+
+$tabMarginTop: 5px; // 表格模块上边距
