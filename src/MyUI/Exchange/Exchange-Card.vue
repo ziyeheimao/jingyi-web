@@ -28,9 +28,9 @@ export default {
     // x
   },
   props: {
-    title: {type: String, default: '标题要长yaochang 1234567890'},
-    iconUrl: {type: String, default: '../../../assets/userPic.png'},
-    ctnText: {type: String, default: '这是内容这是内容..........这是内容这是内容..........这是内容这是内容..........这是内容这是内容..........这是内容这是内容..........这是内容这是内容..........'}
+    title: {type: String, default: ''},
+    iconUrl: {type: String, default: ''},
+    ctnText: {type: String, default: ''}
   },
   computed: {
     InnerSize () {

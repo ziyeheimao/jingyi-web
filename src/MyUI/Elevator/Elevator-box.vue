@@ -45,6 +45,7 @@ export default {
         obj.class = i.className.split(' ')[1]
         this.childLiHeigth.push(obj)
       }
+      console.log(this.childLiHeigth)
     },
 
     // 滚动控制
@@ -124,7 +125,7 @@ export default {
 </script>
 
 <style lang='scss' scoped>
-  // 隐藏滚动条 但能滚动
+// 隐藏滚动条 但能滚动
 .ElevatorBox{
   overflow-y: scroll;
   scrollbar-width: none; /* Firefox */

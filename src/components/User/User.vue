@@ -25,6 +25,21 @@
         <!-- 数据统计 -->
         <DataStatistics></DataStatistics>
 
+        <ElevatorItem class="otherSet1">
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+        </ElevatorItem>
+        <ElevatorItem class="dataStatistics2">
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+        </ElevatorItem>
+
       </ElevatorBox>
     </el-main>
   </el-container>
@@ -33,7 +48,7 @@
 <script>
 // import api from '@api'
 // import main from '@main'
-import { ElevatorBox } from '@myui'
+import { ElevatorBox, ElevatorItem } from '@myui'
 
 import Avatar from './User-Avatar' // 用户头像
 import Nav from './User-Nav' // 导航栏
@@ -46,7 +61,7 @@ import OtherSet from './User-OtherSet' // 其他设置
 export default {
   components: {
     ElevatorBox,
-
+    ElevatorItem,
     Avatar,
     Nav,
 

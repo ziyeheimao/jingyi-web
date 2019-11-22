@@ -79,8 +79,8 @@ export default {
           { pattern: /^1([0-9][0-9]|4[579]|5[0-3,5-9]|6[6]|7[0135678]|9[89])\d{8}$/, message: '请输入正确的手机号' }
         ],
         userName: [ // 姓名
-          { required: true, message: '请输入姓名', trigger: 'blur' },
-          { min: 1, max: 20, message: '用户名在1到20位之间', trigger: 'blur' }
+          { required: true, message: '请输入昵称', trigger: 'blur' },
+          { min: 1, max: 20, message: '昵称在1到20位之间', trigger: 'blur' }
         ],
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },

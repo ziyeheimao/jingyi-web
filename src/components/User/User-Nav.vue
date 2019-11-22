@@ -29,7 +29,9 @@ export default {
         { label: '用户设置', value: 1, icon: 'el-icon-user-solid', toClass: 'userSet' },
         { label: '页面设置', value: 2, icon: 'el-icon-menu', toClass: 'layout' },
         { label: '其他设置', value: 3, icon: 'el-icon-s-operation', toClass: 'otherSet' },
-        { label: '数据统计', value: 4, icon: 'el-icon-s-data', toClass: 'dataStatistics' }
+        { label: '数据统计', value: 4, icon: 'el-icon-s-data', toClass: 'dataStatistics' },
+        { label: '其他设置', value: 5, icon: 'el-icon-s-operation', toClass: 'otherSet1' },
+        { label: '数据统计', value: 6, icon: 'el-icon-s-data', toClass: 'dataStatistics2' }
       ]
     }
   },

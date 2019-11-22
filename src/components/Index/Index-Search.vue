@@ -10,13 +10,19 @@
       <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
     </el-input>
 
-    <ul class="hotWords" id="hotWords" :style="'width:'+hotWordsWidth+'px;'+show"
+    <ul class="hotWords">
+      <li>
+        <span>内容标题</span>
+        <i class="el-icon-close"></i>
+      </li>
+    </ul>
+    <!-- <ul class="hotWords" id="hotWords" :style="'width:'+hotWordsWidth+'px;'+show"
       @mouseenter='mouseenter' @mouseleave='mouseleave'>
       <li v-for="(v, k) in res.hotWords" :key="k" @click="clickLi(v)" :class="k === activateIndex ? 'activate' : ''">
         <span :style="'max-width:'+(hotWordsWidth-35)+'px'">{{v}}</span>
         <i class="el-icon-close" v-show="mode" @click.stop="del(v)"></i>
       </li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 
